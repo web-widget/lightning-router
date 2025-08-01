@@ -66,6 +66,20 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 
 ## 📋 实施计划与执行策略
 
+### 当前实施状态
+
+**✅ 阶段一.3 依赖清理已完成**
+- 已完成 Node.js 特定依赖的清理
+- 已实现平台无关的断言和查询字符串解析工具
+- 已完成 CJS 到 ESM 的完整迁移
+- 所有测试用例通过（484/484）
+
+**🔄 后续阶段规划**
+- **阶段一.1-1.2**: 基础配置更新和模块系统迁移（已完成）
+- **阶段二**: Web 标准 API 重构
+- **阶段三**: TypeScript 严格模式（包含 Vitest 迁移）
+- **阶段四**: Lightning Router 性能优化
+
 ### 实施原则
 
 每个阶段都遵循以下原则：
@@ -95,10 +109,10 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 **目标**: 建立 ESM 基础环境，确保测试框架正常工作
 
 -   [ ] 更新 `package.json` 为 ESM 格式 (`"type": "module"`)
--   [ ] 配置 TypeScript 基础设置
--   [ ] 迁移到 Vitest 测试框架，支持 ESM 和未来 Worker 环境测试
 -   [ ] 验证测试环境正常工作
 -   [ ] **Code Review 检查点**: 确认配置变更正确，测试框架正常运行
+
+**注意**: TypeScript 和 Vitest 配置将在后续阶段处理，当前阶段专注于 ESM 迁移
 
 #### 1.2 模块系统迁移
 
@@ -137,7 +151,7 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 
 **步骤 1**: 实现断言工具
 
--   [ ] 创建 `src/utils/assertions.ts`
+-   [ ] 创建 `lib/assertions.js` (使用 JavaScript，TypeScript 将在后续阶段处理)
 -   [ ] 实现平台无关的断言函数
 -   [ ] 更新所有使用 `node:assert` 的地方
 -   [ ] 运行单元测试验证功能
@@ -145,7 +159,7 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 
 **步骤 2**: 实现查询字符串解析
 
--   [ ] 创建 `src/utils/querystring.ts`
+-   [ ] 创建 `lib/querystring.js` (使用 JavaScript，TypeScript 将在后续阶段处理)
 -   [ ] 实现平台无关的查询字符串解析
 -   [ ] 更新所有使用 `node:querystring` 的地方
 -   [ ] 运行单元测试验证功能
@@ -202,19 +216,14 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 
 **目标**: 配置多环境测试，确保跨平台兼容性
 
-**步骤 1**: 配置 Vitest Worker 环境
+**步骤 1**: 配置多环境测试
 
--   [ ] 配置 Vitest 支持 Worker 环境测试
--   [ ] 创建 Worker 环境测试用例
--   [ ] 运行 Worker 环境测试
--   [ ] **Code Review 检查点**: 确认 Worker 环境测试正常
-
-**步骤 2**: 更新现有测试用例
-
--   [ ] 更新测试用例使用 Web 标准对象
+-   [ ] 更新现有测试用例使用 Web 标准对象
 -   [ ] 添加平台兼容性测试
 -   [ ] 运行完整测试套件
 -   [ ] **Code Review 检查点**: 确认所有测试通过
+
+**注意**: Vitest 和 Worker 环境测试将在后续阶段处理，当前阶段专注于 Web 标准 API 重构
 
 ### 阶段三：TypeScript 严格模式
 
@@ -228,6 +237,8 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 -   [ ] 验证工具链正常工作
 -   [ ] **Code Review 检查点**: 确认 TypeScript 工具链配置正确
 
+**注意**: 此阶段将处理所有 TypeScript 相关配置和迁移工作
+
 #### 3.2 文件重命名和基础类型
 
 **目标**: 将文件重命名为 .ts，添加基础类型定义
@@ -237,6 +248,8 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 -   [ ] 添加基础的 JSDoc 注释
 -   [ ] 运行类型检查，修复基础错误
 -   [ ] **Code Review 检查点**: 确认文件重命名正确，基础类型定义完整
+
+**注意**: 此阶段将处理从 JavaScript 到 TypeScript 的完整迁移
 
 #### 3.3 核心类型系统
 
@@ -296,6 +309,8 @@ Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget
 -   [ ] 识别内存使用优化机会
 -   [ ] 识别算法优化机会
 -   [ ] **Code Review 检查点**: 确认优化机会分析合理
+
+**注意**: 此阶段将处理所有性能优化和最终验证工作
 
 #### 4.2 Lightning Router 路由类型优化
 
@@ -556,9 +571,9 @@ interface TypedRouteOptions extends RouteOptions {
 
 ### 2. 测试策略优化
 
--   **多环境测试**: 使用 Vitest 的 Worker 环境支持，在多个平台进行测试
+-   **多环境测试**: 使用 Vitest 的 Worker 环境支持，在多个平台进行测试（阶段三）
 -   **性能回归测试**: 每个阶段都进行性能基准测试
--   **类型测试**: 使用 TypeScript 的类型检查作为测试的一部分
+-   **类型测试**: 使用 TypeScript 的类型检查作为测试的一部分（阶段三）
 
 ### 3. 性能优化重点
 
@@ -586,9 +601,9 @@ interface TypedRouteOptions extends RouteOptions {
 #### 5.2 重构重点
 
 -   **Node.js 依赖**: 替换为平台无关的工具函数
--   **测试框架**: 迁移到 Vitest
--   **模块系统**: 从 CommonJS 到 ESM
--   **类型系统**: 添加完整的 TypeScript 支持
+-   **测试框架**: 迁移到 Vitest（阶段三）
+-   **模块系统**: 从 CommonJS 到 ESM（阶段一）
+-   **类型系统**: 添加完整的 TypeScript 支持（阶段三）
 
 #### 5.3 性能优化机会
 
