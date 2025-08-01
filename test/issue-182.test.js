@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('..')
-
-test('Set method property when splitting node', t => {
+test('Set method property when splitting node', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 

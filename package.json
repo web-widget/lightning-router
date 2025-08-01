@@ -3,7 +3,7 @@
   "version": "9.3.0",
   "description": "Crazy fast http radix based router",
   "main": "index.js",
-  "type": "commonjs",
+  "type": "module",
   "types": "index.d.ts",
   "scripts": {
     "bench": "node ./benchmark/bench.js",

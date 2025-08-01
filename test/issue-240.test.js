@@ -1,7 +1,5 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
 test('issue-240: .find matching', (t) => {
   t.plan(14)

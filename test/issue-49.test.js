@@ -1,10 +1,8 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 const noop = () => {}
 
-test('Defining static route after parametric - 1', t => {
+test('Defining static route after parametric - 1', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
@@ -16,7 +14,7 @@ test('Defining static route after parametric - 1', t => {
   t.assert.ok(findMyWay.find('GET', '/s'))
 })
 
-test('Defining static route after parametric - 2', t => {
+test('Defining static route after parametric - 2', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
@@ -28,7 +26,7 @@ test('Defining static route after parametric - 2', t => {
   t.assert.ok(findMyWay.find('GET', '/s'))
 })
 
-test('Defining static route after parametric - 3', t => {
+test('Defining static route after parametric - 3', (t) => {
   t.plan(4)
   const findMyWay = FindMyWay()
 
@@ -42,7 +40,7 @@ test('Defining static route after parametric - 3', t => {
   t.assert.ok(findMyWay.find('GET', '/o'))
 })
 
-test('Defining static route after parametric - 4', t => {
+test('Defining static route after parametric - 4', (t) => {
   t.plan(4)
   const findMyWay = FindMyWay()
 
@@ -56,7 +54,7 @@ test('Defining static route after parametric - 4', t => {
   t.assert.ok(findMyWay.find('GET', '/o'))
 })
 
-test('Defining static route after parametric - 5', t => {
+test('Defining static route after parametric - 5', (t) => {
   t.plan(4)
   const findMyWay = FindMyWay()
 
@@ -70,7 +68,7 @@ test('Defining static route after parametric - 5', t => {
   t.assert.ok(findMyWay.find('GET', '/o'))
 })
 
-test('Should produce the same tree - 1', t => {
+test('Should produce the same tree - 1', (t) => {
   t.plan(1)
   const findMyWay1 = FindMyWay()
   const findMyWay2 = FindMyWay()
@@ -84,7 +82,7 @@ test('Should produce the same tree - 1', t => {
   t.assert.equal(findMyWay1.tree, findMyWay2.tree)
 })
 
-test('Should produce the same tree - 2', t => {
+test('Should produce the same tree - 2', (t) => {
   t.plan(3)
   const findMyWay1 = FindMyWay()
   const findMyWay2 = FindMyWay()

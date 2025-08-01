@@ -46,4 +46,5 @@ package-lock.json
 
 .tap
 dist
+dist-types
 .debug

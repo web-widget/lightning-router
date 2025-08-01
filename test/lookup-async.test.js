@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('..')
-
-test('should return result in the done callback', t => {
+test('should return result in the done callback', (t) => {
   t.plan(2)
 
   const router = FindMyWay()
@@ -15,12 +13,14 @@ test('should return result in the done callback', t => {
   })
 })
 
-test('should return an error in the done callback', t => {
+test('should return an error in the done callback', (t) => {
   t.plan(2)
 
   const router = FindMyWay()
   const error = new Error('ASYNC_HANDLER_ERROR')
-  router.on('GET', '/', () => { throw error })
+  router.on('GET', '/', () => {
+    throw error
+  })
 
   router.lookup({ method: 'GET', url: '/' }, null, (err, result) => {
     t.assert.equal(err, error)

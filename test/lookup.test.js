@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('..')
-
-test('lookup calls route handler with no context', t => {
+test('lookup calls route handler with no context', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay()
@@ -16,7 +14,7 @@ test('lookup calls route handler with no context', t => {
   findMyWay.lookup({ method: 'GET', url: '/example', headers: {} }, null)
 })
 
-test('lookup calls route handler with context as scope', t => {
+test('lookup calls route handler with context as scope', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay()
@@ -27,10 +25,14 @@ test('lookup calls route handler with context as scope', t => {
     t.assert.equal(this, ctx)
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/example', headers: {} }, null, ctx)
+  findMyWay.lookup(
+    { method: 'GET', url: '/example', headers: {} },
+    null,
+    ctx
+  )
 })
 
-test('lookup calls default route handler with no context', t => {
+test('lookup calls default route handler with no context', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay({
@@ -43,7 +45,7 @@ test('lookup calls default route handler with no context', t => {
   findMyWay.lookup({ method: 'GET', url: '/example', headers: {} }, null)
 })
 
-test('lookup calls default route handler with context as scope', t => {
+test('lookup calls default route handler with context as scope', (t) => {
   t.plan(1)
 
   const ctx = { foo: 'bar' }
@@ -54,5 +56,9 @@ test('lookup calls default route handler with context as scope', t => {
     }
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/example', headers: {} }, null, ctx)
+  findMyWay.lookup(
+    { method: 'GET', url: '/example', headers: {} },
+    null,
+    ctx
+  )
 })

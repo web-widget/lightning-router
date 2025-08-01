@@ -1,7 +1,5 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
 test('Wildcard route match when regexp route fails', (t) => {
   t.plan(1)

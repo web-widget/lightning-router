@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('..')
-
-test('Double colon and parametric children', t => {
+test('Double colon and parametric children', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -11,10 +9,12 @@ test('Double colon and parametric children', t => {
   findMyWay.on('GET', '/:article_name', () => {})
 
   t.assert.deepEqual(findMyWay.find('GET', '/:articles').params, {})
-  t.assert.deepEqual(findMyWay.find('GET', '/articles_param').params, { article_name: 'articles_param' })
+  t.assert.deepEqual(findMyWay.find('GET', '/articles_param').params, {
+    article_name: 'articles_param'
+  })
 })
 
-test('Double colon and parametric children', t => {
+test('Double colon and parametric children', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 

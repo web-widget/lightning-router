@@ -1,16 +1,16 @@
-const acceptHostStrategy = require('../lib/strategies/accept-host')
+import { storage as _storage } from '../lib/strategies/accept-host.js'
 
-const { test } = require('node:test')
+import { test } from 'node:test'
 
 test('can get hosts by exact matches', async (t) => {
-  const storage = acceptHostStrategy.storage()
+  const storage = _storage()
   t.assert.equal(storage.get('fastify.io'), undefined)
   storage.set('fastify.io', true)
   t.assert.equal(storage.get('fastify.io'), true)
 })
 
 test('can get hosts by regexp matches', async (t) => {
-  const storage = acceptHostStrategy.storage()
+  const storage = _storage()
   t.assert.equal(storage.get('fastify.io'), undefined)
   storage.set(/.+fastify\.io/, true)
   t.assert.equal(storage.get('foo.fastify.io'), true)
@@ -18,7 +18,7 @@ test('can get hosts by regexp matches', async (t) => {
 })
 
 test('exact host matches take precendence over regexp matches', async (t) => {
-  const storage = acceptHostStrategy.storage()
+  const storage = _storage()
   storage.set(/.+fastify\.io/, 'wildcard')
   storage.set('auth.fastify.io', 'exact')
   t.assert.equal(storage.get('foo.fastify.io'), 'wildcard')

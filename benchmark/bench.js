@@ -1,9 +1,10 @@
-'use strict'
+import { join, dirname } from 'path'
+import { Worker } from 'worker_threads'
+import { fileURLToPath } from 'url'
 
-const path = require('path')
-const { Worker } = require('worker_threads')
-
-const BENCH_THREAD_PATH = path.join(__dirname, 'bench-thread.js')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const BENCH_THREAD_PATH = join(__dirname, 'bench-thread.js')
 
 const benchmarks = [
   {
@@ -18,8 +19,12 @@ const benchmarks = [
   },
   {
     name: 'lookup long static route',
-    setupURLs: [{ method: 'GET', url: '/static/static/static/static/static' }],
-    arguments: [{ method: 'GET', url: '/static/static/static/static/static' }]
+    setupURLs: [
+      { method: 'GET', url: '/static/static/static/static/static' }
+    ],
+    arguments: [
+      { method: 'GET', url: '/static/static/static/static/static' }
+    ]
   },
   {
     name: 'lookup long static route (common prefix)',
@@ -30,7 +35,9 @@ const benchmarks = [
       { method: 'GET', url: '/static/static/static/static' },
       { method: 'GET', url: '/static/static/static/static/static' }
     ],
-    arguments: [{ method: 'GET', url: '/static/static/static/static/static' }]
+    arguments: [
+      { method: 'GET', url: '/static/static/static/static/static' }
+    ]
   },
   {
     name: 'lookup short parametric route',
@@ -40,7 +47,9 @@ const benchmarks = [
   {
     name: 'lookup long parametric route',
     setupURLs: [{ method: 'GET', url: '/:param' }],
-    arguments: [{ method: 'GET', url: '/longParamParamParamParamParamParam' }]
+    arguments: [
+      { method: 'GET', url: '/longParamParamParamParamParamParam' }
+    ]
   },
   {
     name: 'lookup short parametric route (encoded unoptimized)',
@@ -64,13 +73,19 @@ const benchmarks = [
   },
   {
     name: 'lookup multi-parametric route with two short regex params',
-    setupURLs: [{ method: 'GET', url: '/:param1([a-z]*)1:param2([a-z]*)2' }],
+    setupURLs: [
+      { method: 'GET', url: '/:param1([a-z]*)1:param2([a-z]*)2' }
+    ],
     arguments: [{ method: 'GET', url: '/param1param2' }]
   },
   {
     name: 'lookup long static + parametric route',
-    setupURLs: [{ method: 'GET', url: '/static/:param1/static/:param2/static' }],
-    arguments: [{ method: 'GET', url: '/static/param1/static/param2/static' }]
+    setupURLs: [
+      { method: 'GET', url: '/static/:param1/static/:param2/static' }
+    ],
+    arguments: [
+      { method: 'GET', url: '/static/param1/static/param2/static' }
+    ]
   },
   {
     name: 'lookup short wildcard route',
@@ -80,44 +95,112 @@ const benchmarks = [
   {
     name: 'lookup long wildcard route',
     setupURLs: [{ method: 'GET', url: '/*' }],
-    arguments: [{ method: 'GET', url: '/static/static/static/static/static' }]
+    arguments: [
+      { method: 'GET', url: '/static/static/static/static/static' }
+    ]
   },
   {
     name: 'lookup root route on constrained router',
     setupURLs: [
       { method: 'GET', url: '/' },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '1.2.0' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'example.com' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'fastify.io' } } }
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '1.2.0' } }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: {
+          constraints: { version: '2.0.0', host: 'example.com' }
+        }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '2.0.0', host: 'fastify.io' } }
+      }
     ],
-    arguments: [{ method: 'GET', url: '/', headers: { host: 'fastify.io' } }]
+    arguments: [
+      { method: 'GET', url: '/', headers: { host: 'fastify.io' } }
+    ]
   },
   {
     name: 'lookup short static unconstraint route',
     setupURLs: [
       { method: 'GET', url: '/static', opts: {} },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'example.com' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'fastify.io' } } }
+      {
+        method: 'GET',
+        url: '/static',
+        opts: {
+          constraints: { version: '2.0.0', host: 'example.com' }
+        }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '2.0.0', host: 'fastify.io' } }
+      }
     ],
     arguments: [{ method: 'GET', url: '/static', headers: {} }]
   },
   {
     name: 'lookup short static versioned route',
     setupURLs: [
-      { method: 'GET', url: '/static', opts: { constraints: { version: '1.2.0' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'example.com' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'fastify.io' } } }
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '1.2.0' } }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: {
+          constraints: { version: '2.0.0', host: 'example.com' }
+        }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '2.0.0', host: 'fastify.io' } }
+      }
     ],
-    arguments: [{ method: 'GET', url: '/static', headers: { 'accept-version': '1.x', host: 'fastify.io' } }]
+    arguments: [
+      {
+        method: 'GET',
+        url: '/static',
+        headers: { 'accept-version': '1.x', host: 'fastify.io' }
+      }
+    ]
   },
   {
     name: 'lookup short static constrained (version & host) route',
     setupURLs: [
-      { method: 'GET', url: '/static', opts: { constraints: { version: '1.2.0' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'example.com' } } },
-      { method: 'GET', url: '/static', opts: { constraints: { version: '2.0.0', host: 'fastify.io' } } }
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '1.2.0' } }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: {
+          constraints: { version: '2.0.0', host: 'example.com' }
+        }
+      },
+      {
+        method: 'GET',
+        url: '/static',
+        opts: { constraints: { version: '2.0.0', host: 'fastify.io' } }
+      }
     ],
-    arguments: [{ method: 'GET', url: '/static', headers: { 'accept-version': '2.x', host: 'fastify.io' } }]
+    arguments: [
+      {
+        method: 'GET',
+        url: '/static',
+        headers: { 'accept-version': '2.x', host: 'fastify.io' }
+      }
+    ]
   }
 ]
 

@@ -1,16 +1,14 @@
-'use strict'
+import { test } from 'node:test'
+import { NullObject } from '../lib/null-object.js'
 
-const { test } = require('node:test')
-const { NullObject } = require('../lib/null-object')
-
-test('NullObject', t => {
+test('NullObject', (t) => {
   t.plan(2)
   const nullObject = new NullObject()
   t.assert.ok(nullObject instanceof NullObject)
   t.assert.ok(typeof nullObject === 'object')
 })
 
-test('has no methods from generic Object class', t => {
+test('has no methods from generic Object class', (t) => {
   function getAllPropertyNames (obj) {
     const props = []
 
@@ -20,7 +18,7 @@ test('has no methods from generic Object class', t => {
           props.push(prop)
         }
       })
-    } while (obj = Object.getPrototypeOf(obj)) // eslint-disable-line
+        } while ((obj = Object.getPrototypeOf(obj))); // eslint-disable-line
 
     return props
   }

@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('..')
-
-test('find calls can pass no constraints', t => {
+test('find calls can pass no constraints', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 

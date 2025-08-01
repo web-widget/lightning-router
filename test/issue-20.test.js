@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('Standard case', t => {
+test('Standard case', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -15,10 +13,13 @@ test('Standard case', t => {
     t.assert.equal(params.param, 'perfectly-fine-route')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/a/perfectly-fine-route', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/a/perfectly-fine-route', headers: {} },
+    null
+  )
 })
 
-test('Should be 404 / 1', t => {
+test('Should be 404 / 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -33,7 +34,7 @@ test('Should be 404 / 1', t => {
   findMyWay.lookup({ method: 'GET', url: '/a', headers: {} }, null)
 })
 
-test('Should be 404 / 2', t => {
+test('Should be 404 / 2', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -45,10 +46,13 @@ test('Should be 404 / 2', t => {
     t.assert.fail('We should not be here')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/a-non-existing-route', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/a-non-existing-route', headers: {} },
+    null
+  )
 })
 
-test('Should be 404 / 3', t => {
+test('Should be 404 / 3', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -63,7 +67,7 @@ test('Should be 404 / 3', t => {
   findMyWay.lookup({ method: 'GET', url: '/a//', headers: {} }, null)
 })
 
-test('Should get an empty parameter', t => {
+test('Should get an empty parameter', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {

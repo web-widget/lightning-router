@@ -1,13 +1,16 @@
-'use strict'
+import { test } from 'node:test'
+import _rfdc from 'rfdc'
 
-const { test } = require('node:test')
-const rfdc = require('rfdc')({ proto: true })
-const FindMyWay = require('..')
+import FindMyWay from '../index.js'
 
+const rfdc = _rfdc({ proto: true })
 function equalRouters (t, router1, router2) {
   t.assert.deepStrictEqual(router1._opts, router2._opts)
   t.assert.deepEqual(router1.routes, router2.routes)
-  t.assert.deepEqual(JSON.stringify(router1.trees), JSON.stringify(router2.trees))
+  t.assert.deepEqual(
+    JSON.stringify(router1.trees),
+    JSON.stringify(router2.trees)
+  )
 
   t.assert.deepStrictEqual(
     router1.constrainer.strategies,
@@ -23,7 +26,7 @@ function equalRouters (t, router1, router2) {
   )
 }
 
-test('hasRoute returns false if there is no routes', t => {
+test('hasRoute returns false if there is no routes', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -35,7 +38,7 @@ test('hasRoute returns false if there is no routes', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true for a static route', t => {
+test('hasRoute returns true for a static route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -49,7 +52,7 @@ test('hasRoute returns true for a static route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns false for a static route', t => {
+test('hasRoute returns false for a static route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -63,7 +66,7 @@ test('hasRoute returns false for a static route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true for a parametric route', t => {
+test('hasRoute returns true for a parametric route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -77,7 +80,7 @@ test('hasRoute returns true for a parametric route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns false for a parametric route', t => {
+test('hasRoute returns false for a parametric route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -91,7 +94,7 @@ test('hasRoute returns false for a parametric route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true for a parametric route with static suffix', t => {
+test('hasRoute returns true for a parametric route with static suffix', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -105,7 +108,7 @@ test('hasRoute returns true for a parametric route with static suffix', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns false for a parametric route with static suffix', t => {
+test('hasRoute returns false for a parametric route with static suffix', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -119,7 +122,7 @@ test('hasRoute returns false for a parametric route with static suffix', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true even if a param name different', t => {
+test('hasRoute returns true even if a param name different', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -133,7 +136,7 @@ test('hasRoute returns true even if a param name different', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true for a multi-parametric route', t => {
+test('hasRoute returns true for a multi-parametric route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -147,7 +150,7 @@ test('hasRoute returns true for a multi-parametric route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns false for a multi-parametric route', t => {
+test('hasRoute returns false for a multi-parametric route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -161,7 +164,7 @@ test('hasRoute returns false for a multi-parametric route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true for a regexp route', t => {
+test('hasRoute returns true for a regexp route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -175,7 +178,7 @@ test('hasRoute returns true for a regexp route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns false for a regexp route', t => {
+test('hasRoute returns false for a regexp route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -189,7 +192,7 @@ test('hasRoute returns false for a regexp route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns true for a wildcard route', t => {
+test('hasRoute returns true for a wildcard route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()
@@ -203,7 +206,7 @@ test('hasRoute returns true for a wildcard route', t => {
   equalRouters(t, findMyWay, fundMyWayClone)
 })
 
-test('hasRoute returns false for a wildcard route', t => {
+test('hasRoute returns false for a wildcard route', (t) => {
   t.plan(7)
 
   const findMyWay = FindMyWay()

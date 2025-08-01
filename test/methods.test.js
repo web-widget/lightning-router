@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('the router is an object with methods', t => {
+test('the router is an object with methods', (t) => {
   t.plan(4)
 
   const findMyWay = FindMyWay()
@@ -14,7 +12,7 @@ test('the router is an object with methods', t => {
   t.assert.equal(typeof findMyWay.find, 'function')
 })
 
-test('on throws for invalid method', t => {
+test('on throws for invalid method', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -23,7 +21,7 @@ test('on throws for invalid method', t => {
   })
 })
 
-test('on throws for invalid path', t => {
+test('on throws for invalid path', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
@@ -43,7 +41,7 @@ test('on throws for invalid path', t => {
   })
 })
 
-test('register a route', t => {
+test('register a route', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -54,7 +52,7 @@ test('register a route', t => {
   findMyWay.lookup({ method: 'GET', url: '/test', headers: {} }, null)
 })
 
-test('register a route with multiple methods', t => {
+test('register a route with multiple methods', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -66,7 +64,7 @@ test('register a route with multiple methods', t => {
   findMyWay.lookup({ method: 'POST', url: '/test', headers: {} }, null)
 })
 
-test('does not register /test/*/ when ignoreTrailingSlash is true', t => {
+test('does not register /test/*/ when ignoreTrailingSlash is true', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     ignoreTrailingSlash: true
@@ -79,7 +77,7 @@ test('does not register /test/*/ when ignoreTrailingSlash is true', t => {
   )
 })
 
-test('off throws for invalid method', t => {
+test('off throws for invalid method', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -88,7 +86,7 @@ test('off throws for invalid method', t => {
   })
 })
 
-test('off throws for invalid path', t => {
+test('off throws for invalid path', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
@@ -108,7 +106,7 @@ test('off throws for invalid path', t => {
   })
 })
 
-test('off with nested wildcards with parametric and static', t => {
+test('off with nested wildcards with parametric and static', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -140,7 +138,7 @@ test('off with nested wildcards with parametric and static', t => {
   )
 })
 
-test('off removes all routes when ignoreTrailingSlash is true', t => {
+test('off removes all routes when ignoreTrailingSlash is true', (t) => {
   t.plan(6)
   const findMyWay = FindMyWay({
     ignoreTrailingSlash: true
@@ -167,7 +165,7 @@ test('off removes all routes when ignoreTrailingSlash is true', t => {
   t.assert.equal(findMyWay.routes.length, 0)
 })
 
-test('off removes all routes when ignoreDuplicateSlashes is true', t => {
+test('off removes all routes when ignoreDuplicateSlashes is true', (t) => {
   t.plan(6)
   const findMyWay = FindMyWay({
     ignoreDuplicateSlashes: true
@@ -194,7 +192,7 @@ test('off removes all routes when ignoreDuplicateSlashes is true', t => {
   t.assert.equal(findMyWay.routes.length, 0)
 })
 
-test('deregister a route without children', t => {
+test('deregister a route without children', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -206,7 +204,7 @@ test('deregister a route without children', t => {
   t.assert.ok(!findMyWay.find('GET', '/a/b'))
 })
 
-test('deregister a route with children', t => {
+test('deregister a route with children', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -218,7 +216,7 @@ test('deregister a route with children', t => {
   t.assert.ok(findMyWay.find('GET', '/a/b'))
 })
 
-test('deregister a route by method', t => {
+test('deregister a route by method', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -229,7 +227,7 @@ test('deregister a route by method', t => {
   t.assert.ok(findMyWay.find('POST', '/a'))
 })
 
-test('deregister a route with multiple methods', t => {
+test('deregister a route with multiple methods', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -240,7 +238,7 @@ test('deregister a route with multiple methods', t => {
   t.assert.ok(!findMyWay.find('POST', '/a'))
 })
 
-test('reset a router', t => {
+test('reset a router', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -251,7 +249,7 @@ test('reset a router', t => {
   t.assert.ok(!findMyWay.find('POST', '/a'))
 })
 
-test('default route', t => {
+test('default route', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay({
@@ -263,7 +261,7 @@ test('default route', t => {
   findMyWay.lookup({ method: 'GET', url: '/test', headers: {} }, null)
 })
 
-test('parametric route', t => {
+test('parametric route', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -274,7 +272,7 @@ test('parametric route', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
 })
 
-test('multiple parametric route', t => {
+test('multiple parametric route', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -287,10 +285,13 @@ test('multiple parametric route', t => {
   })
 
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/other-test/world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/other-test/world', headers: {} },
+    null
+  )
 })
 
-test('multiple parametric route with the same prefix', t => {
+test('multiple parametric route with the same prefix', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -303,10 +304,13 @@ test('multiple parametric route with the same prefix', t => {
   })
 
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/world/world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/world/world', headers: {} },
+    null
+  )
 })
 
-test('nested parametric route', t => {
+test('nested parametric route', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -315,10 +319,13 @@ test('nested parametric route', t => {
     t.assert.equal(params.world, 'world')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/test/world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/test/world', headers: {} },
+    null
+  )
 })
 
-test('nested parametric route with same prefix', t => {
+test('nested parametric route with same prefix', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
@@ -332,10 +339,13 @@ test('nested parametric route with same prefix', t => {
   })
 
   findMyWay.lookup({ method: 'GET', url: '/test', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/test/world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/test/world', headers: {} },
+    null
+  )
 })
 
-test('long route', t => {
+test('long route', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -343,23 +353,33 @@ test('long route', t => {
     t.assert.ok('inside long path')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/abc/def/ghi/lmn/opq/rst/uvz', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/abc/def/ghi/lmn/opq/rst/uvz', headers: {} },
+    null
+  )
 })
 
-test('long parametric route', t => {
+test('long parametric route', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
-  findMyWay.on('GET', '/abc/:def/ghi/:lmn/opq/:rst/uvz', (req, res, params) => {
-    t.assert.equal(params.def, 'def')
-    t.assert.equal(params.lmn, 'lmn')
-    t.assert.equal(params.rst, 'rst')
-  })
+  findMyWay.on(
+    'GET',
+    '/abc/:def/ghi/:lmn/opq/:rst/uvz',
+    (req, res, params) => {
+      t.assert.equal(params.def, 'def')
+      t.assert.equal(params.lmn, 'lmn')
+      t.assert.equal(params.rst, 'rst')
+    }
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/abc/def/ghi/lmn/opq/rst/uvz', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/abc/def/ghi/lmn/opq/rst/uvz', headers: {} },
+    null
+  )
 })
 
-test('long parametric route with common prefix', t => {
+test('long parametric route with common prefix', (t) => {
   t.plan(9)
   const findMyWay = FindMyWay()
 
@@ -386,19 +406,32 @@ test('long parametric route with common prefix', t => {
     t.assert.equal(params.rst, 'rst')
   })
 
-  findMyWay.on('GET', '/abc/:def/ghi/:lmn/opq/:rst/uvz', (req, res, params) => {
-    t.assert.equal(params.def, 'def')
-    t.assert.equal(params.lmn, 'lmn')
-    t.assert.equal(params.rst, 'rst')
-  })
+  findMyWay.on(
+    'GET',
+    '/abc/:def/ghi/:lmn/opq/:rst/uvz',
+    (req, res, params) => {
+      t.assert.equal(params.def, 'def')
+      t.assert.equal(params.lmn, 'lmn')
+      t.assert.equal(params.rst, 'rst')
+    }
+  )
 
   findMyWay.lookup({ method: 'GET', url: '/abc/def', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/abc/def/ghi/lmn', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/abc/def/ghi/lmn/opq/rst', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/abc/def/ghi/lmn/opq/rst/uvz', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/abc/def/ghi/lmn', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/abc/def/ghi/lmn/opq/rst', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/abc/def/ghi/lmn/opq/rst/uvz', headers: {} },
+    null
+  )
 })
 
-test('common prefix', t => {
+test('common prefix', (t) => {
   t.plan(4)
   const findMyWay = FindMyWay()
 
@@ -424,7 +457,7 @@ test('common prefix', t => {
   findMyWay.lookup({ method: 'GET', url: '/ffb', headers: {} }, null)
 })
 
-test('wildcard', t => {
+test('wildcard', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -432,13 +465,10 @@ test('wildcard', t => {
     t.assert.equal(params['*'], 'hello')
   })
 
-  findMyWay.lookup(
-    { method: 'GET', url: '/test/hello', headers: {} },
-    null
-  )
+  findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
 })
 
-test('catch all wildcard', t => {
+test('catch all wildcard', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -446,88 +476,87 @@ test('catch all wildcard', t => {
     t.assert.equal(params['*'], '/test/hello')
   })
 
-  findMyWay.lookup(
-    { method: 'GET', url: '/test/hello', headers: {} },
-    null
-  )
+  findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
 })
 
-test('find should return the route', t => {
+test('find should return the route', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
 
   findMyWay.on('GET', '/test', fn)
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test'),
-    { handler: fn, params: {}, store: null, searchParams: {} }
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test'), {
+    handler: fn,
+    params: {},
+    store: null,
+    searchParams: {}
+  })
 })
 
-test('find should return the route with params', t => {
+test('find should return the route with params', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
 
   findMyWay.on('GET', '/test/:id', fn)
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test/hello'),
-    { handler: fn, params: { id: 'hello' }, store: null, searchParams: {} }
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test/hello'), {
+    handler: fn,
+    params: { id: 'hello' },
+    store: null,
+    searchParams: {}
+  })
 })
 
-test('find should return a null handler if the route does not exist', t => {
+test('find should return a null handler if the route does not exist', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test'),
-    null
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test'), null)
 })
 
-test('should decode the uri - parametric', t => {
+test('should decode the uri - parametric', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
 
   findMyWay.on('GET', '/test/:id', fn)
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test/he%2Fllo'),
-    { handler: fn, params: { id: 'he/llo' }, store: null, searchParams: {} }
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test/he%2Fllo'), {
+    handler: fn,
+    params: { id: 'he/llo' },
+    store: null,
+    searchParams: {}
+  })
 })
 
-test('should decode the uri - wildcard', t => {
+test('should decode the uri - wildcard', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
 
   findMyWay.on('GET', '/test/*', fn)
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test/he%2Fllo'),
-    { handler: fn, params: { '*': 'he/llo' }, store: null, searchParams: {} }
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test/he%2Fllo'), {
+    handler: fn,
+    params: { '*': 'he/llo' },
+    store: null,
+    searchParams: {}
+  })
 })
 
-test('safe decodeURIComponent', t => {
+test('safe decodeURIComponent', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
 
   findMyWay.on('GET', '/test/:id', fn)
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test/hel%"Flo'),
-    null
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test/hel%"Flo'), null)
 })
 
-test('safe decodeURIComponent - nested route', t => {
+test('safe decodeURIComponent - nested route', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
@@ -540,20 +569,17 @@ test('safe decodeURIComponent - nested route', t => {
   )
 })
 
-test('safe decodeURIComponent - wildcard', t => {
+test('safe decodeURIComponent - wildcard', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
 
   findMyWay.on('GET', '/test/*', fn)
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test/hel%"Flo'),
-    null
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test/hel%"Flo'), null)
 })
 
-test('static routes should be inserted before parametric / 1', t => {
+test('static routes should be inserted before parametric / 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -568,7 +594,7 @@ test('static routes should be inserted before parametric / 1', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
 })
 
-test('static routes should be inserted before parametric / 2', t => {
+test('static routes should be inserted before parametric / 2', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -583,7 +609,7 @@ test('static routes should be inserted before parametric / 2', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
 })
 
-test('static routes should be inserted before parametric / 3', t => {
+test('static routes should be inserted before parametric / 3', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -607,7 +633,7 @@ test('static routes should be inserted before parametric / 3', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
 })
 
-test('static routes should be inserted before parametric / 4', t => {
+test('static routes should be inserted before parametric / 4', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -631,7 +657,7 @@ test('static routes should be inserted before parametric / 4', t => {
   findMyWay.lookup({ method: 'GET', url: '/id', headers: {} }, null)
 })
 
-test('Static parametric with shared part of the path', t => {
+test('Static parametric with shared part of the path', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay({
@@ -648,11 +674,17 @@ test('Static parametric with shared part of the path', t => {
     t.assert.equal(params.param, 'other')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/example/shared/nested/oopss', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/example/other/nested/oops', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/example/shared/nested/oopss', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/example/other/nested/oops', headers: {} },
+    null
+  )
 })
 
-test('parametric route with different method', t => {
+test('parametric route with different method', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -691,7 +723,7 @@ test('params does not keep the object reference', (t, done) => {
   findMyWay.lookup({ method: 'GET', url: '/test/world', headers: {} }, null)
 })
 
-test('Unsupported method (static)', t => {
+test('Unsupported method (static)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -706,7 +738,7 @@ test('Unsupported method (static)', t => {
   findMyWay.lookup({ method: 'TROLL', url: '/', headers: {} }, null)
 })
 
-test('Unsupported method (wildcard)', t => {
+test('Unsupported method (wildcard)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -718,10 +750,13 @@ test('Unsupported method (wildcard)', t => {
     t.assert.fail('We should not be here')
   })
 
-  findMyWay.lookup({ method: 'TROLL', url: '/hello/world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'TROLL', url: '/hello/world', headers: {} },
+    null
+  )
 })
 
-test('Unsupported method (static find)', t => {
+test('Unsupported method (static find)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -730,7 +765,7 @@ test('Unsupported method (static find)', t => {
   t.assert.deepEqual(findMyWay.find('TROLL', '/'), null)
 })
 
-test('Unsupported method (wildcard find)', t => {
+test('Unsupported method (wildcard find)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -739,14 +774,14 @@ test('Unsupported method (wildcard find)', t => {
   t.assert.deepEqual(findMyWay.find('TROLL', '/hello/world'), null)
 })
 
-test('register all known HTTP methods', t => {
+test('register all known HTTP methods', async (t) => {
   t.plan(6)
   const findMyWay = FindMyWay()
 
-  const httpMethods = require('../lib/http-methods')
+  const httpMethods = await import('../lib/http-methods.js')
   const handlers = {}
-  for (const i in httpMethods) {
-    const m = httpMethods[i]
+  for (const i in httpMethods.default) {
+    const m = httpMethods.default[i]
     handlers[m] = function myHandler () {}
     findMyWay.on(m, '/test', handlers[m])
   }
@@ -755,32 +790,48 @@ test('register all known HTTP methods', t => {
   t.assert.equal(findMyWay.find('COPY', '/test').handler, handlers.COPY)
 
   t.assert.ok(findMyWay.find('SUBSCRIBE', '/test'))
-  t.assert.equal(findMyWay.find('SUBSCRIBE', '/test').handler, handlers.SUBSCRIBE)
+  t.assert.equal(
+    findMyWay.find('SUBSCRIBE', '/test').handler,
+    handlers.SUBSCRIBE
+  )
 
   t.assert.ok(findMyWay.find('M-SEARCH', '/test'))
-  t.assert.equal(findMyWay.find('M-SEARCH', '/test').handler, handlers['M-SEARCH'])
+  t.assert.equal(
+    findMyWay.find('M-SEARCH', '/test').handler,
+    handlers['M-SEARCH']
+  )
 })
 
-test('off removes all routes without checking constraints if no constraints are specified', t => {
+test('off removes all routes without checking constraints if no constraints are specified', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay()
 
   findMyWay.on('GET', '/test', {}, (req, res) => {})
-  findMyWay.on('GET', '/test', { constraints: { host: 'example.com' } }, (req, res) => {})
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'example.com' } },
+    (req, res) => {}
+  )
 
   findMyWay.off('GET', '/test')
 
   t.assert.equal(findMyWay.routes.length, 0)
 })
 
-test('off removes only constrainted routes if constraints are specified', t => {
+test('off removes only constrainted routes if constraints are specified', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
 
   findMyWay.on('GET', '/test', {}, (req, res) => {})
-  findMyWay.on('GET', '/test', { constraints: { host: 'example.com' } }, (req, res) => {})
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'example.com' } },
+    (req, res) => {}
+  )
 
   findMyWay.off('GET', '/test', { host: 'example.com' })
 
@@ -788,21 +839,31 @@ test('off removes only constrainted routes if constraints are specified', t => {
   t.assert.ok(!findMyWay.routes[0].opts.constraints)
 })
 
-test('off removes no routes if provided constraints does not match any registered route', t => {
+test('off removes no routes if provided constraints does not match any registered route', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay()
 
   findMyWay.on('GET', '/test', {}, (req, res) => {})
-  findMyWay.on('GET', '/test', { constraints: { version: '2.x' } }, (req, res) => {})
-  findMyWay.on('GET', '/test', { constraints: { version: '3.x' } }, (req, res) => {})
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { version: '2.x' } },
+    (req, res) => {}
+  )
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { version: '3.x' } },
+    (req, res) => {}
+  )
 
   findMyWay.off('GET', '/test', { version: '1.x' })
 
   t.assert.equal(findMyWay.routes.length, 3)
 })
 
-test('off validates that constraints is an object or undefined', t => {
+test('off validates that constraints is an object or undefined', (t) => {
   t.plan(6)
 
   const findMyWay = FindMyWay()
@@ -815,7 +876,7 @@ test('off validates that constraints is an object or undefined', t => {
   t.assert.doesNotThrow(() => findMyWay.off('GET', '/'))
 })
 
-test('off removes only unconstrainted route if an empty object is given as constraints', t => {
+test('off removes only unconstrainted route if an empty object is given as constraints', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()

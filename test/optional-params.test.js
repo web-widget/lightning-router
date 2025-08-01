@@ -1,7 +1,5 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
 test('Test route with optional parameter', (t) => {
   t.plan(2)
@@ -20,7 +18,10 @@ test('Test route with optional parameter', (t) => {
   })
 
   findMyWay.lookup({ method: 'GET', url: '/a/foo-bar/b', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/a/foo-bar/b/foo', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/a/foo-bar/b/foo', headers: {} },
+    null
+  )
 })
 
 test('Test for duplicate route with optional param', (t) => {
@@ -35,9 +36,14 @@ test('Test for duplicate route with optional param', (t) => {
 
   try {
     findMyWay.on('GET', '/foo', (req, res, params) => {})
-    t.assert.fail('method is already declared for route with optional param')
+    t.assert.fail(
+      'method is already declared for route with optional param'
+    )
   } catch (e) {
-    t.assert.equal(e.message, 'Method \'GET\' already declared for route \'/foo\' with constraints \'{}\'')
+    t.assert.equal(
+      e.message,
+      "Method 'GET' already declared for route '/foo' with constraints '{}'"
+    )
   }
 })
 
@@ -51,9 +57,14 @@ test('Test for param with ? not at the end', (t) => {
 
   try {
     findMyWay.on('GET', '/foo/:bar?/baz', (req, res, params) => {})
-    t.assert.fail('Optional Param in the middle of the path is not allowed')
+    t.assert.fail(
+      'Optional Param in the middle of the path is not allowed'
+    )
   } catch (e) {
-    t.assert.equal(e.message, 'Optional Parameter needs to be the last parameter of the path')
+    t.assert.equal(
+      e.message,
+      'Optional Parameter needs to be the last parameter of the path'
+    )
   }
 })
 
@@ -72,7 +83,10 @@ test('Multi parametric route with optional param', (t) => {
     }
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/a/foo-bar-baz', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/a/foo-bar-baz', headers: {} },
+    null
+  )
   findMyWay.lookup({ method: 'GET', url: '/a', headers: {} }, null)
 })
 
@@ -95,8 +109,14 @@ test('Optional Parameter with ignoreTrailingSlash = true', (t) => {
 
   findMyWay.lookup({ method: 'GET', url: '/test/hello/', headers: {} }, null)
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/foo', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/foo/', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/foo', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/foo/', headers: {} },
+    null
+  )
 })
 
 test('Optional Parameter with ignoreTrailingSlash = false', (t) => {
@@ -120,8 +140,14 @@ test('Optional Parameter with ignoreTrailingSlash = false', (t) => {
 
   findMyWay.lookup({ method: 'GET', url: '/test/hello/', headers: {} }, null)
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/foo', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/foo/', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/foo', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/foo/', headers: {} },
+    null
+  )
 })
 
 test('Optional Parameter with ignoreDuplicateSlashes = true', (t) => {
@@ -143,8 +169,14 @@ test('Optional Parameter with ignoreDuplicateSlashes = true', (t) => {
 
   findMyWay.lookup({ method: 'GET', url: '/test//hello', headers: {} }, null)
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/foo', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test//hello//foo', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/foo', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/test//hello//foo', headers: {} },
+    null
+  )
 })
 
 test('Optional Parameter with ignoreDuplicateSlashes = false', (t) => {
@@ -172,8 +204,14 @@ test('Optional Parameter with ignoreDuplicateSlashes = false', (t) => {
 
   findMyWay.lookup({ method: 'GET', url: '/test//hello', headers: {} }, null)
   findMyWay.lookup({ method: 'GET', url: '/test/hello', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/hello/foo', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test//hello/foo', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/hello/foo', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/test//hello/foo', headers: {} },
+    null
+  )
 })
 
 test('deregister a route with optional param', (t) => {

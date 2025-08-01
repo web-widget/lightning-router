@@ -1,10 +1,8 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 const noop = () => {}
 
-test('single-character prefix', t => {
+test('single-character prefix', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -14,7 +12,7 @@ test('single-character prefix', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('multi-character prefix', t => {
+test('multi-character prefix', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -24,7 +22,7 @@ test('multi-character prefix', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('static / 1', t => {
+test('static / 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -34,7 +32,7 @@ test('static / 1', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('static / 2', t => {
+test('static / 2', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -45,7 +43,7 @@ test('static / 2', t => {
   t.assert.equal(findMyWay.find('GET', '/ff/bulk'), null)
 })
 
-test('static / 3', t => {
+test('static / 3', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -57,7 +55,7 @@ test('static / 3', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('with parameter / 1', t => {
+test('with parameter / 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -67,7 +65,7 @@ test('with parameter / 1', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('with parameter / 2', t => {
+test('with parameter / 2', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -77,7 +75,7 @@ test('with parameter / 2', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('with parameter / 3', t => {
+test('with parameter / 3', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -87,7 +85,7 @@ test('with parameter / 3', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('with parameter / 4', t => {
+test('with parameter / 4', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
@@ -97,7 +95,7 @@ test('with parameter / 4', t => {
   t.assert.equal(findMyWay.find('GET', '/bulk'), null)
 })
 
-test('with parameter / 5', t => {
+test('with parameter / 5', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
@@ -108,7 +106,7 @@ test('with parameter / 5', t => {
   t.assert.equal(findMyWay.find('GET', '/bb/foo/bulk'), null)
 })
 
-test('with parameter / 6', t => {
+test('with parameter / 6', (t) => {
   t.plan(3)
   const findMyWay = FindMyWay()
 
@@ -120,7 +118,7 @@ test('with parameter / 6', t => {
   t.assert.notEqual(findMyWay.find('GET', '/static/foo/static/bulk'), null)
 })
 
-test('wildcard / 1', t => {
+test('wildcard / 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 

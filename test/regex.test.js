@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('route with matching regex', t => {
+test('route with matching regex', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -18,7 +16,7 @@ test('route with matching regex', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/12', headers: {} }, null)
 })
 
-test('route without matching regex', t => {
+test('route without matching regex', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -33,7 +31,7 @@ test('route without matching regex', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/test', headers: {} }, null)
 })
 
-test('route with an extension regex 2', t => {
+test('route with an extension regex 2', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay({
     defaultRoute: (req) => {
@@ -46,11 +44,17 @@ test('route with an extension regex 2', t => {
   findMyWay.on('GET', '/test/D/:file(^\\D+).png', () => {
     t.assert.ok('regex match')
   })
-  findMyWay.lookup({ method: 'GET', url: '/test/S/foo.png', headers: {} }, null)
-  findMyWay.lookup({ method: 'GET', url: '/test/D/foo.png', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/S/foo.png', headers: {} },
+    null
+  )
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/D/foo.png', headers: {} },
+    null
+  )
 })
 
-test('nested route with matching regex', t => {
+test('nested route with matching regex', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -62,10 +66,13 @@ test('nested route with matching regex', t => {
     t.assert.ok('regex match')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/test/12/hello', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/12/hello', headers: {} },
+    null
+  )
 })
 
-test('mixed nested route with matching regex', t => {
+test('mixed nested route with matching regex', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -73,15 +80,22 @@ test('mixed nested route with matching regex', t => {
     }
   })
 
-  findMyWay.on('GET', '/test/:id(^\\d+$)/hello/:world', (req, res, params) => {
-    t.assert.equal(params.id, '12')
-    t.assert.equal(params.world, 'world')
-  })
+  findMyWay.on(
+    'GET',
+    '/test/:id(^\\d+$)/hello/:world',
+    (req, res, params) => {
+      t.assert.equal(params.id, '12')
+      t.assert.equal(params.world, 'world')
+    }
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/test/12/hello/world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/12/hello/world', headers: {} },
+    null
+  )
 })
 
-test('mixed nested route with double matching regex', t => {
+test('mixed nested route with double matching regex', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -89,15 +103,22 @@ test('mixed nested route with double matching regex', t => {
     }
   })
 
-  findMyWay.on('GET', '/test/:id(^\\d+$)/hello/:world(^\\d+$)', (req, res, params) => {
-    t.assert.equal(params.id, '12')
-    t.assert.equal(params.world, '15')
-  })
+  findMyWay.on(
+    'GET',
+    '/test/:id(^\\d+$)/hello/:world(^\\d+$)',
+    (req, res, params) => {
+      t.assert.equal(params.id, '12')
+      t.assert.equal(params.world, '15')
+    }
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/test/12/hello/15', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/12/hello/15', headers: {} },
+    null
+  )
 })
 
-test('mixed nested route without double matching regex', t => {
+test('mixed nested route without double matching regex', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -105,14 +126,21 @@ test('mixed nested route without double matching regex', t => {
     }
   })
 
-  findMyWay.on('GET', '/test/:id(^\\d+$)/hello/:world(^\\d+$)', (req, res, params) => {
-    t.assert.fail('route mathed')
-  })
+  findMyWay.on(
+    'GET',
+    '/test/:id(^\\d+$)/hello/:world(^\\d+$)',
+    (req, res, params) => {
+      t.assert.fail('route mathed')
+    }
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/test/12/hello/test', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/test/12/hello/test', headers: {} },
+    null
+  )
 })
 
-test('route with an extension regex', t => {
+test('route with an extension regex', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -127,7 +155,7 @@ test('route with an extension regex', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/12.png', headers: {} }, null)
 })
 
-test('route with an extension regex - no match', t => {
+test('route with an extension regex - no match', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -142,7 +170,7 @@ test('route with an extension regex - no match', t => {
   findMyWay.lookup({ method: 'GET', url: '/test/aa.png', headers: {} }, null)
 })
 
-test('safe decodeURIComponent', t => {
+test('safe decodeURIComponent', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: () => {
@@ -154,13 +182,10 @@ test('safe decodeURIComponent', t => {
     t.assert.fail('we should not be here')
   })
 
-  t.assert.deepEqual(
-    findMyWay.find('GET', '/test/hel%"Flo', {}),
-    null
-  )
+  t.assert.deepEqual(findMyWay.find('GET', '/test/hel%"Flo', {}), null)
 })
 
-test('Should check if a regex is safe to use', t => {
+test('Should check if a regex is safe to use', (t) => {
   t.plan(13)
 
   const noop = () => {}
@@ -187,7 +212,7 @@ test('Should check if a regex is safe to use', t => {
 
   const findMyWay = FindMyWay()
 
-  good.forEach(regex => {
+  good.forEach((regex) => {
     try {
       findMyWay.on('GET', `/test/:id(${regex.toString()})`, noop)
       t.assert.ok('ok')
@@ -197,7 +222,7 @@ test('Should check if a regex is safe to use', t => {
     }
   })
 
-  bad.forEach(regex => {
+  bad.forEach((regex) => {
     try {
       findMyWay.on('GET', `/test/:id(${regex.toString()})`, noop)
       t.assert.fail('should throw')
@@ -207,7 +232,7 @@ test('Should check if a regex is safe to use', t => {
   })
 })
 
-test('Disable safe regex check', t => {
+test('Disable safe regex check', (t) => {
   t.plan(13)
 
   const noop = () => {}
@@ -234,7 +259,7 @@ test('Disable safe regex check', t => {
 
   const findMyWay = FindMyWay({ allowUnsafeRegex: true })
 
-  good.forEach(regex => {
+  good.forEach((regex) => {
     try {
       findMyWay.on('GET', `/test/:id(${regex.toString()})`, noop)
       t.assert.ok('ok')
@@ -244,7 +269,7 @@ test('Disable safe regex check', t => {
     }
   })
 
-  bad.forEach(regex => {
+  bad.forEach((regex) => {
     try {
       findMyWay.on('GET', `/test/:id(${regex.toString()})`, noop)
       t.assert.ok('ok')
@@ -265,5 +290,7 @@ test('prevent back-tracking', { timeout: 20 }, (t) => {
   })
 
   findMyWay.on('GET', '/:foo-:bar-', (req, res, params) => {})
-  findMyWay.find('GET', '/' + '-'.repeat(16000) + 'a', { host: 'fastify.io' })
+  findMyWay.find('GET', '/' + '-'.repeat(16000) + 'a', {
+    host: 'fastify.io'
+  })
 })

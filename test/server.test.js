@@ -1,8 +1,6 @@
-'use strict'
-
-const { test } = require('node:test')
-const http = require('http')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import { createServer } from 'http'
+import FindMyWay from '../index.js'
 
 test('basic router with http server', (t, done) => {
   t.plan(6)
@@ -14,15 +12,17 @@ test('basic router with http server', (t, done) => {
     res.end(JSON.stringify({ hello: 'world' }))
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
-    const res = await fetch(`http://localhost:${server.address().port}/test`)
+    const res = await fetch(
+            `http://localhost:${server.address().port}/test`
+    )
 
     t.assert.equal(res.status, 200)
     t.assert.deepEqual(await res.json(), { hello: 'world' })
@@ -40,15 +40,17 @@ test('router with params with http server', (t, done) => {
     res.end(JSON.stringify({ hello: 'world' }))
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
-    const res = await fetch(`http://localhost:${server.address().port}/test/hello`)
+    const res = await fetch(
+            `http://localhost:${server.address().port}/test/hello`
+    )
 
     t.assert.equal(res.status, 200)
     t.assert.deepEqual(await res.json(), { hello: 'world' })
@@ -65,11 +67,11 @@ test('default route', (t, done) => {
     }
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -83,11 +85,11 @@ test('automatic default route', (t, done) => {
   t.plan(2)
   const findMyWay = FindMyWay()
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -117,11 +119,11 @@ test('maps two routes when trailing slash should be trimmed', (t, done) => {
     res.end('othertest')
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -160,11 +162,11 @@ test('does not trim trailing slash when ignoreTrailingSlash is false', (t, done)
     res.end('test')
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -194,11 +196,11 @@ test('does not map // when ignoreTrailingSlash is true', (t, done) => {
     res.end('test')
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -235,11 +237,11 @@ test('maps two routes when duplicate slashes should be trimmed', (t, done) => {
     res.end('othertest')
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -278,11 +280,11 @@ test('does not trim duplicate slashes when ignoreDuplicateSlashes is false', (t,
     res.end('test')
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -312,11 +314,11 @@ test('does map // when ignoreDuplicateSlashes is true', (t, done) => {
     res.end('test')
   })
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
@@ -339,21 +341,29 @@ test('versioned routes', (t, done) => {
 
   const findMyWay = FindMyWay()
 
-  findMyWay.on('GET', '/test', { constraints: { version: '1.2.3' } }, (req, res, params) => {
-    res.end('ok')
-  })
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { version: '1.2.3' } },
+    (req, res, params) => {
+      res.end('ok')
+    }
+  )
 
-  const server = http.createServer((req, res) => {
+  const server = createServer((req, res) => {
     findMyWay.lookup(req, res)
   })
 
-  server.listen(0, async err => {
+  server.listen(0, async (err) => {
     t.assert.ifError(err)
     server.unref()
 
-    let res = await fetch(`http://localhost:${server.address().port}/test`, {
-      headers: { 'Accept-Version': '1.2.3' }
-    })
+    let res = await fetch(
+            `http://localhost:${server.address().port}/test`,
+            {
+              headers: { 'Accept-Version': '1.2.3' }
+            }
+    )
 
     t.assert.equal(res.status, 200)
 

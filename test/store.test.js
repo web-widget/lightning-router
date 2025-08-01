@@ -1,20 +1,23 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('handler should have the store object', t => {
+test('handler should have the store object', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
 
-  findMyWay.on('GET', '/test', (req, res, params, store) => {
-    t.assert.equal(store.hello, 'world')
-  }, { hello: 'world' })
+  findMyWay.on(
+    'GET',
+    '/test',
+    (req, res, params, store) => {
+      t.assert.equal(store.hello, 'world')
+    },
+    { hello: 'world' }
+  )
 
   findMyWay.lookup({ method: 'GET', url: '/test', headers: {} }, null)
 })
 
-test('find a store object', t => {
+test('find a store object', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay()
   const fn = () => {}
@@ -29,21 +32,29 @@ test('find a store object', t => {
   })
 })
 
-test('update the store', t => {
+test('update the store', (t) => {
   t.plan(2)
   const findMyWay = FindMyWay()
   let bool = false
 
-  findMyWay.on('GET', '/test', (req, res, params, store) => {
-    if (!bool) {
-      t.assert.equal(store.hello, 'world')
-      store.hello = 'hello'
-      bool = true
-      findMyWay.lookup({ method: 'GET', url: '/test', headers: {} }, null)
-    } else {
-      t.assert.equal(store.hello, 'hello')
-    }
-  }, { hello: 'world' })
+  findMyWay.on(
+    'GET',
+    '/test',
+    (req, res, params, store) => {
+      if (!bool) {
+        t.assert.equal(store.hello, 'world')
+        store.hello = 'hello'
+        bool = true
+        findMyWay.lookup(
+          { method: 'GET', url: '/test', headers: {} },
+          null
+        )
+      } else {
+        t.assert.equal(store.hello, 'hello')
+      }
+    },
+    { hello: 'world' }
+  )
 
   findMyWay.lookup({ method: 'GET', url: '/test', headers: {} }, null)
 })
