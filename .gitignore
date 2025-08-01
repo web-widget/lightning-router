@@ -45,3 +45,5 @@ jspm_packages
 package-lock.json
 
 .tap
+dist
+.debug
