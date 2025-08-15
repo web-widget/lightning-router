@@ -1,12 +1,13 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
 test('path params match', (t) => {
   t.plan(24)
 
-  const findMyWay = FindMyWay({ ignoreTrailingSlash: true, ignoreDuplicateSlashes: true })
+  const findMyWay = FindMyWay({
+    ignoreTrailingSlash: true,
+    ignoreDuplicateSlashes: true
+  })
 
   const b1Path = function b1StaticPath () {}
   const b2Path = function b2StaticPath () {}

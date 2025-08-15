@@ -1,5 +1,3 @@
-'use strict'
-
 /*
   Char codes:
     '!': 33 - !
@@ -25,16 +23,16 @@
     '~': 126 - ~
 */
 
-const assert = require('node:assert')
-const querystring = require('fast-querystring')
-const isRegexSafe = require('safe-regex2')
-const deepEqual = require('fast-deep-equal')
-const { prettyPrintTree } = require('./lib/pretty-print')
-const { StaticNode, NODE_TYPES } = require('./lib/node')
-const Constrainer = require('./lib/constrainer')
-const httpMethods = require('./lib/http-methods')
-const httpMethodStrategy = require('./lib/strategies/http-method')
-const { safeDecodeURI, safeDecodeURIComponent } = require('./lib/url-sanitizer')
+import { assert } from './lib/assertions.js'
+import { parse as parseQueryString } from './lib/querystring.js'
+import isRegexSafe from 'safe-regex2'
+import deepEqual from 'fast-deep-equal'
+import { prettyPrintTree } from './lib/pretty-print.js'
+import { StaticNode, NODE_TYPES } from './lib/node.js'
+import Constrainer from './lib/constrainer.js'
+import httpMethods from './lib/http-methods.js'
+import httpMethodStrategy from './lib/strategies/http-method.js'
+import { safeDecodeURI, safeDecodeURIComponent } from './lib/url-sanitizer.js'
 
 const FULL_PATH_REGEXP = /^https?:\/\/.*?\//
 const OPTIONAL_PARAM_REGEXP = /(\/:[^/()]*?)\?(\/?)/
@@ -46,7 +44,9 @@ if (!isRegexSafe(FULL_PATH_REGEXP)) {
 }
 
 if (!isRegexSafe(OPTIONAL_PARAM_REGEXP)) {
-  throw new Error('the OPTIONAL_PARAM_REGEXP is not safe, update this module')
+  throw new Error(
+    'the OPTIONAL_PARAM_REGEXP is not safe, update this module'
+  )
 }
 
 if (!isRegexSafe(ESCAPE_REGEXP)) {
@@ -54,7 +54,9 @@ if (!isRegexSafe(ESCAPE_REGEXP)) {
 }
 
 if (!isRegexSafe(REMOVE_DUPLICATE_SLASHES_REGEXP)) {
-  throw new Error('the REMOVE_DUPLICATE_SLASHES_REGEXP is not safe, update this module')
+  throw new Error(
+    'the REMOVE_DUPLICATE_SLASHES_REGEXP is not safe, update this module'
+  )
 }
 
 function Router (opts) {
@@ -65,34 +67,48 @@ function Router (opts) {
   this._opts = opts
 
   if (opts.defaultRoute) {
-    assert(typeof opts.defaultRoute === 'function', 'The default route must be a function')
+    assert(
+      typeof opts.defaultRoute === 'function',
+      'The default route must be a function'
+    )
     this.defaultRoute = opts.defaultRoute
   } else {
     this.defaultRoute = null
   }
 
   if (opts.onBadUrl) {
-    assert(typeof opts.onBadUrl === 'function', 'The bad url handler must be a function')
+    assert(
+      typeof opts.onBadUrl === 'function',
+      'The bad url handler must be a function'
+    )
     this.onBadUrl = opts.onBadUrl
   } else {
     this.onBadUrl = null
   }
 
   if (opts.buildPrettyMeta) {
-    assert(typeof opts.buildPrettyMeta === 'function', 'buildPrettyMeta must be a function')
+    assert(
+      typeof opts.buildPrettyMeta === 'function',
+      'buildPrettyMeta must be a function'
+    )
     this.buildPrettyMeta = opts.buildPrettyMeta
   } else {
     this.buildPrettyMeta = defaultBuildPrettyMeta
   }
 
   if (opts.querystringParser) {
-    assert(typeof opts.querystringParser === 'function', 'querystringParser must be a function')
+    assert(
+      typeof opts.querystringParser === 'function',
+      'querystringParser must be a function'
+    )
     this.querystringParser = opts.querystringParser
   } else {
-    this.querystringParser = (query) => query.length === 0 ? {} : querystring.parse(query)
+    this.querystringParser = (query) =>
+      query.length === 0 ? {} : parseQueryString(query)
   }
 
-  this.caseSensitive = opts.caseSensitive === undefined ? true : opts.caseSensitive
+  this.caseSensitive =
+        opts.caseSensitive === undefined ? true : opts.caseSensitive
   this.ignoreTrailingSlash = opts.ignoreTrailingSlash || false
   this.ignoreDuplicateSlashes = opts.ignoreDuplicateSlashes || false
   this.maxParamLength = opts.maxParamLength || 100
@@ -115,14 +131,21 @@ Router.prototype.on = function on (method, path, opts, handler, store) {
   // path validation
   assert(typeof path === 'string', 'Path should be a string')
   assert(path.length > 0, 'The path could not be empty')
-  assert(path[0] === '/' || path[0] === '*', 'The first character of a path should be `/` or `*`')
+  assert(
+    path[0] === '/' || path[0] === '*',
+    'The first character of a path should be `/` or `*`'
+  )
   // handler validation
   assert(typeof handler === 'function', 'Handler should be a function')
 
   // path ends with optional parameter
   const optionalParamMatch = path.match(OPTIONAL_PARAM_REGEXP)
   if (optionalParamMatch) {
-    assert(path.length === optionalParamMatch.index + optionalParamMatch[0].length, 'Optional Parameter needs to be the last parameter of the path')
+    assert(
+      path.length ===
+                optionalParamMatch.index + optionalParamMatch[0].length,
+      'Optional Parameter needs to be the last parameter of the path'
+    )
 
     const pathFull = path.replace(OPTIONAL_PARAM_REGEXP, '$1$2')
     const pathOptional = path.replace(OPTIONAL_PARAM_REGEXP, '$2') || '/'
@@ -145,7 +168,10 @@ Router.prototype.on = function on (method, path, opts, handler, store) {
   const methods = Array.isArray(method) ? method : [method]
   for (const method of methods) {
     assert(typeof method === 'string', 'Method should be a string')
-    assert(httpMethods.includes(method), `Method '${method}' is not an http method.`)
+    assert(
+      httpMethods.includes(method),
+            `Method '${method}' is not an http method.`
+    )
     this._on(method, path, opts, handler, store, route)
   }
 }
@@ -153,7 +179,10 @@ Router.prototype.on = function on (method, path, opts, handler, store) {
 Router.prototype._on = function _on (method, path, opts, handler, store) {
   let constraints = {}
   if (opts.constraints !== undefined) {
-    assert(typeof opts.constraints === 'object' && opts.constraints !== null, 'Constraints should be an object')
+    assert(
+      typeof opts.constraints === 'object' && opts.constraints !== null,
+      'Constraints should be an object'
+    )
     if (Object.keys(opts.constraints).length !== 0) {
       constraints = opts.constraints
     }
@@ -186,10 +215,15 @@ Router.prototype._on = function _on (method, path, opts, handler, store) {
       continue
     }
 
-    const isParametricNode = pattern.charCodeAt(i) === 58 && pattern.charCodeAt(i + 1) !== 58
+    const isParametricNode =
+            pattern.charCodeAt(i) === 58 && pattern.charCodeAt(i + 1) !== 58
     const isWildcardNode = pattern.charCodeAt(i) === 42
 
-    if (isParametricNode || isWildcardNode || (i === pattern.length && i !== parentNodePathIndex)) {
+    if (
+      isParametricNode ||
+            isWildcardNode ||
+            (i === pattern.length && i !== parentNodePathIndex)
+    ) {
       let staticNodePath = pattern.slice(parentNodePathIndex, i)
       if (!this.caseSensitive) {
         staticNodePath = staticNodePath.toLowerCase()
@@ -221,11 +255,20 @@ Router.prototype._on = function _on (method, path, opts, handler, store) {
           isRegexNode = isRegexNode || isRegexParam || isStaticPart
 
           if (isRegexParam) {
-            const endOfRegexIndex = getClosingParenthensePosition(pattern, j)
-            const regexString = pattern.slice(j, endOfRegexIndex + 1)
+            const endOfRegexIndex = getClosingParenthensePosition(
+              pattern,
+              j
+            )
+            const regexString = pattern.slice(
+              j,
+              endOfRegexIndex + 1
+            )
 
             if (!this.allowUnsafeRegex) {
-              assert(isRegexSafe(new RegExp(regexString)), `The regex '${regexString}' is not safe!`)
+              assert(
+                isRegexSafe(new RegExp(regexString)),
+                                `The regex '${regexString}' is not safe!`
+              )
             }
 
             regexps.push(trimRegExpStartAndEnd(regexString))
@@ -233,7 +276,11 @@ Router.prototype._on = function _on (method, path, opts, handler, store) {
             j = endOfRegexIndex + 1
             isParamSafe = true
           } else {
-            regexps.push(isParamSafe ? '(.*?)' : `(${backtrack}|(?:(?!${backtrack}).)*)`)
+            regexps.push(
+              isParamSafe
+                ? '(.*?)'
+                : `(${backtrack}|(?:(?!${backtrack}).)*)`
+            )
             isParamSafe = false
           }
 
@@ -252,20 +299,35 @@ Router.prototype._on = function _on (method, path, opts, handler, store) {
           if (staticPart) {
             staticPart = staticPart.replaceAll('::', ':')
             staticPart = staticPart.replaceAll('%', '%25')
-            regexps.push(backtrack = escapeRegExp(staticPart))
+            regexps.push((backtrack = escapeRegExp(staticPart)))
           }
 
           lastParamStartIndex = j + 1
 
-          if (isEndOfNode || pattern.charCodeAt(j) === 47 || j === pattern.length) {
-            const nodePattern = isRegexNode ? '()' + staticPart : staticPart
+          if (
+            isEndOfNode ||
+                        pattern.charCodeAt(j) === 47 ||
+                        j === pattern.length
+          ) {
+            const nodePattern = isRegexNode
+              ? '()' + staticPart
+              : staticPart
             const nodePath = pattern.slice(i, j)
 
-            pattern = pattern.slice(0, i + 1) + nodePattern + pattern.slice(j)
+            pattern =
+                            pattern.slice(0, i + 1) +
+                            nodePattern +
+                            pattern.slice(j)
             i += nodePattern.length
 
-            const regex = isRegexNode ? new RegExp('^' + regexps.join('') + '$') : null
-            currentNode = currentNode.createParametricChild(regex, staticPart || null, nodePath)
+            const regex = isRegexNode
+              ? new RegExp('^' + regexps.join('') + '$')
+              : null
+            currentNode = currentNode.createParametricChild(
+              regex,
+              staticPart || null,
+              nodePath
+            )
             parentNodePathIndex = i + 1
             break
           }
@@ -278,7 +340,9 @@ Router.prototype._on = function _on (method, path, opts, handler, store) {
       parentNodePathIndex = i + 1
 
       if (i !== pattern.length - 1) {
-        throw new Error('Wildcard must be the last character in the route')
+        throw new Error(
+          'Wildcard must be the last character in the route'
+        )
       }
     }
   }
@@ -295,10 +359,14 @@ Router.prototype._on = function _on (method, path, opts, handler, store) {
     const routeConstraints = existRoute.opts.constraints || {}
     if (
       existRoute.method === method &&
-      existRoute.pattern === pattern &&
-      deepEqual(routeConstraints, constraints)
+            existRoute.pattern === pattern &&
+            deepEqual(routeConstraints, constraints)
     ) {
-      throw new Error(`Method '${method}' already declared for route '${pattern}' with constraints '${JSON.stringify(constraints)}'`)
+      throw new Error(
+                `Method '${method}' already declared for route '${pattern}' with constraints '${JSON.stringify(
+                    constraints
+                )}'`
+      )
     }
   }
 
@@ -330,10 +398,15 @@ Router.prototype.findRoute = function findNode (method, path, constraints = {}) 
       continue
     }
 
-    const isParametricNode = pattern.charCodeAt(i) === 58 && pattern.charCodeAt(i + 1) !== 58
+    const isParametricNode =
+            pattern.charCodeAt(i) === 58 && pattern.charCodeAt(i + 1) !== 58
     const isWildcardNode = pattern.charCodeAt(i) === 42
 
-    if (isParametricNode || isWildcardNode || (i === pattern.length && i !== parentNodePathIndex)) {
+    if (
+      isParametricNode ||
+            isWildcardNode ||
+            (i === pattern.length && i !== parentNodePathIndex)
+    ) {
       let staticNodePath = pattern.slice(parentNodePathIndex, i)
       if (!this.caseSensitive) {
         staticNodePath = staticNodePath.toLowerCase()
@@ -368,11 +441,20 @@ Router.prototype.findRoute = function findNode (method, path, constraints = {}) 
           isRegexNode = isRegexNode || isRegexParam || isStaticPart
 
           if (isRegexParam) {
-            const endOfRegexIndex = getClosingParenthensePosition(pattern, j)
-            const regexString = pattern.slice(j, endOfRegexIndex + 1)
+            const endOfRegexIndex = getClosingParenthensePosition(
+              pattern,
+              j
+            )
+            const regexString = pattern.slice(
+              j,
+              endOfRegexIndex + 1
+            )
 
             if (!this.allowUnsafeRegex) {
-              assert(isRegexSafe(new RegExp(regexString)), `The regex '${regexString}' is not safe!`)
+              assert(
+                isRegexSafe(new RegExp(regexString)),
+                                `The regex '${regexString}' is not safe!`
+              )
             }
 
             regexps.push(trimRegExpStartAndEnd(regexString))
@@ -380,7 +462,11 @@ Router.prototype.findRoute = function findNode (method, path, constraints = {}) 
             j = endOfRegexIndex + 1
             isParamSafe = false
           } else {
-            regexps.push(isParamSafe ? '(.*?)' : `(${backtrack}|(?:(?!${backtrack}).)*)`)
+            regexps.push(
+              isParamSafe
+                ? '(.*?)'
+                : `(${backtrack}|(?:(?!${backtrack}).)*)`
+            )
             isParamSafe = false
           }
 
@@ -399,20 +485,35 @@ Router.prototype.findRoute = function findNode (method, path, constraints = {}) 
           if (staticPart) {
             staticPart = staticPart.replaceAll('::', ':')
             staticPart = staticPart.replaceAll('%', '%25')
-            regexps.push(backtrack = escapeRegExp(staticPart))
+            regexps.push((backtrack = escapeRegExp(staticPart)))
           }
 
           lastParamStartIndex = j + 1
 
-          if (isEndOfNode || pattern.charCodeAt(j) === 47 || j === pattern.length) {
-            const nodePattern = isRegexNode ? '()' + staticPart : staticPart
+          if (
+            isEndOfNode ||
+                        pattern.charCodeAt(j) === 47 ||
+                        j === pattern.length
+          ) {
+            const nodePattern = isRegexNode
+              ? '()' + staticPart
+              : staticPart
             const nodePath = pattern.slice(i, j)
 
-            pattern = pattern.slice(0, i + 1) + nodePattern + pattern.slice(j)
+            pattern =
+                            pattern.slice(0, i + 1) +
+                            nodePattern +
+                            pattern.slice(j)
             i += nodePattern.length
 
-            const regex = isRegexNode ? new RegExp('^' + regexps.join('') + '$') : null
-            currentNode = currentNode.getParametricChild(regex, staticPart || null, nodePath)
+            const regex = isRegexNode
+              ? new RegExp('^' + regexps.join('') + '$')
+              : null
+            currentNode = currentNode.getParametricChild(
+              regex,
+              staticPart || null,
+              nodePath
+            )
             if (currentNode === null) {
               return null
             }
@@ -429,7 +530,9 @@ Router.prototype.findRoute = function findNode (method, path, constraints = {}) 
       parentNodePathIndex = i + 1
 
       if (i !== pattern.length - 1) {
-        throw new Error('Wildcard must be the last character in the route')
+        throw new Error(
+          'Wildcard must be the last character in the route'
+        )
       }
     }
   }
@@ -442,8 +545,8 @@ Router.prototype.findRoute = function findNode (method, path, constraints = {}) 
     const routeConstraints = existRoute.opts.constraints || {}
     if (
       existRoute.method === method &&
-      existRoute.pattern === pattern &&
-      deepEqual(routeConstraints, constraints)
+            existRoute.pattern === pattern &&
+            deepEqual(routeConstraints, constraints)
     ) {
       return {
         handler: existRoute.handler,
@@ -474,17 +577,27 @@ Router.prototype.off = function off (method, path, constraints) {
   // path validation
   assert(typeof path === 'string', 'Path should be a string')
   assert(path.length > 0, 'The path could not be empty')
-  assert(path[0] === '/' || path[0] === '*', 'The first character of a path should be `/` or `*`')
+  assert(
+    path[0] === '/' || path[0] === '*',
+    'The first character of a path should be `/` or `*`'
+  )
   // options validation
   assert(
     typeof constraints === 'undefined' ||
-    (typeof constraints === 'object' && !Array.isArray(constraints) && constraints !== null),
-    'Constraints should be an object or undefined.')
+            (typeof constraints === 'object' &&
+                !Array.isArray(constraints) &&
+                constraints !== null),
+    'Constraints should be an object or undefined.'
+  )
 
   // path ends with optional parameter
   const optionalParamMatch = path.match(OPTIONAL_PARAM_REGEXP)
   if (optionalParamMatch) {
-    assert(path.length === optionalParamMatch.index + optionalParamMatch[0].length, 'Optional Parameter needs to be the last parameter of the path')
+    assert(
+      path.length ===
+                optionalParamMatch.index + optionalParamMatch[0].length,
+      'Optional Parameter needs to be the last parameter of the path'
+    )
 
     const pathFull = path.replace(OPTIONAL_PARAM_REGEXP, '$1$2')
     const pathOptional = path.replace(OPTIONAL_PARAM_REGEXP, '$2')
@@ -511,17 +624,25 @@ Router.prototype.off = function off (method, path, constraints) {
 Router.prototype._off = function _off (method, path, constraints) {
   // method validation
   assert(typeof method === 'string', 'Method should be a string')
-  assert(httpMethods.includes(method), `Method '${method}' is not an http method.`)
+  assert(
+    httpMethods.includes(method),
+        `Method '${method}' is not an http method.`
+  )
 
   function matcherWithoutConstraints (route) {
     return method !== route.method || path !== route.path
   }
 
   function matcherWithConstraints (route) {
-    return matcherWithoutConstraints(route) || !deepEqual(constraints, route.opts.constraints || {})
+    return (
+      matcherWithoutConstraints(route) ||
+            !deepEqual(constraints, route.opts.constraints || {})
+    )
   }
 
-  const predicate = constraints ? matcherWithConstraints : matcherWithoutConstraints
+  const predicate = constraints
+    ? matcherWithConstraints
+    : matcherWithoutConstraints
 
   // Rebuild tree without the specific route
   const newRoutes = this.routes.filter(predicate)
@@ -559,15 +680,29 @@ Router.prototype.lookup = function lookup (req, res, ctx, done) {
 Router.prototype.callHandler = function callHandler (handle, req, res, ctx) {
   if (handle === null) return this._defaultRoute(req, res, ctx)
   return ctx === undefined
-    ? handle.handler(req, res, handle.params, handle.store, handle.searchParams)
-    : handle.handler.call(ctx, req, res, handle.params, handle.store, handle.searchParams)
+    ? handle.handler(
+      req,
+      res,
+      handle.params,
+      handle.store,
+      handle.searchParams
+    )
+    : handle.handler.call(
+      ctx,
+      req,
+      res,
+      handle.params,
+      handle.store,
+      handle.searchParams
+    )
 }
 
 Router.prototype.find = function find (method, path, derivedConstraints) {
   let currentNode = this.trees[method]
   if (currentNode === undefined) return null
 
-  if (path.charCodeAt(0) !== 47) { // 47 is '/'
+  if (path.charCodeAt(0) !== 47) {
+    // 47 is '/'
     path = path.replace(FULL_PATH_REGEXP, '/')
   }
 
@@ -611,7 +746,10 @@ Router.prototype.find = function find (method, path, derivedConstraints) {
 
   while (true) {
     if (pathIndex === pathLen && currentNode.isLeafNode) {
-      const handle = currentNode.handlerStorage.getMatchingHandler(derivedConstraints)
+      const handle =
+                currentNode.handlerStorage.getMatchingHandler(
+                  derivedConstraints
+                )
       if (handle !== null) {
         return {
           handler: handle.handler,
@@ -622,7 +760,12 @@ Router.prototype.find = function find (method, path, derivedConstraints) {
       }
     }
 
-    let node = currentNode.getNextNode(path, pathIndex, brothersNodesStack, params.length)
+    let node = currentNode.getNextNode(
+      path,
+      pathIndex,
+      brothersNodesStack,
+      params.length
+    )
 
     if (node === null) {
       if (brothersNodesStack.length === 0) {
@@ -730,7 +873,7 @@ Router.prototype.prettyPrint = function (options = {}) {
     constraints[httpMethodStrategy.name] = httpMethodStrategy
 
     const mergedRouter = new Router({ ...this._opts, constraints })
-    const mergedRoutes = this.routes.map(route => {
+    const mergedRoutes = this.routes.map((route) => {
       const constraints = {
         ...route.opts.constraints,
         [httpMethodStrategy.name]: route.method
@@ -762,14 +905,16 @@ Router.prototype.all = function (path, handler, store) {
   this.on(httpMethods, path, handler, store)
 }
 
-module.exports = Router
+export default Router
 
 function escapeRegExp (string) {
   return string.replace(ESCAPE_REGEXP, '\\$&')
 }
 
 function removeDuplicateSlashes (path) {
-  return path.indexOf('//') !== -1 ? path.replace(REMOVE_DUPLICATE_SLASHES_REGEXP, '/') : path
+  return path.indexOf('//') !== -1
+    ? path.replace(REMOVE_DUPLICATE_SLASHES_REGEXP, '/')
+    : path
 }
 
 function trimLastSlash (path) {
@@ -786,7 +931,9 @@ function trimRegExpStartAndEnd (regexString) {
   }
 
   if (regexString.charCodeAt(regexString.length - 2) === 36) {
-    regexString = regexString.slice(0, regexString.length - 2) + regexString.slice(regexString.length - 1)
+    regexString =
+            regexString.slice(0, regexString.length - 2) +
+            regexString.slice(regexString.length - 1)
   }
 
   return regexString

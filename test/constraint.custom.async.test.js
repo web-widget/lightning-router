@@ -1,16 +1,19 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('..')
-const rfdc = require('rfdc')({ proto: true })
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
+import _rfdc from 'rfdc'
+const rfdc = _rfdc({ proto: true })
 
 const customHeaderConstraint = {
   name: 'requestedBy',
   storage: function () {
     const requestedBys = {}
     return {
-      get: (requestedBy) => { return requestedBys[requestedBy] || null },
-      set: (requestedBy, store) => { requestedBys[requestedBy] = store }
+      get: (requestedBy) => {
+        return requestedBys[requestedBy] || null
+      },
+      set: (requestedBy, store) => {
+        requestedBys[requestedBy] = store
+      }
     }
   },
   deriveConstraint: (req, ctx, done) => {
@@ -23,14 +26,24 @@ const customHeaderConstraint = {
   }
 }
 
-test('should derive multiple async constraints', t => {
+test('should derive multiple async constraints', (t) => {
   t.plan(2)
 
   const customHeaderConstraint2 = rfdc(customHeaderConstraint)
   customHeaderConstraint2.name = 'requestedBy2'
 
-  const router = FindMyWay({ constraints: { requestedBy: customHeaderConstraint, requestedBy2: customHeaderConstraint2 } })
-  router.on('GET', '/', { constraints: { requestedBy: 'node', requestedBy2: 'node' } }, () => 'asyncHandler')
+  const router = FindMyWay({
+    constraints: {
+      requestedBy: customHeaderConstraint,
+      requestedBy2: customHeaderConstraint2
+    }
+  })
+  router.on(
+    'GET',
+    '/',
+    { constraints: { requestedBy: 'node', requestedBy2: 'node' } },
+    () => 'asyncHandler'
+  )
 
   router.lookup(
     {
@@ -48,11 +61,18 @@ test('should derive multiple async constraints', t => {
   )
 })
 
-test('lookup should return an error from deriveConstraint', t => {
+test('lookup should return an error from deriveConstraint', (t) => {
   t.plan(2)
 
-  const router = FindMyWay({ constraints: { requestedBy: customHeaderConstraint } })
-  router.on('GET', '/', { constraints: { requestedBy: 'node' } }, () => 'asyncHandler')
+  const router = FindMyWay({
+    constraints: { requestedBy: customHeaderConstraint }
+  })
+  router.on(
+    'GET',
+    '/',
+    { constraints: { requestedBy: 'node' } },
+    () => 'asyncHandler'
+  )
 
   router.lookup(
     {
@@ -70,12 +90,24 @@ test('lookup should return an error from deriveConstraint', t => {
   )
 })
 
-test('should derive sync and async constraints', t => {
+test('should derive sync and async constraints', (t) => {
   t.plan(4)
 
-  const router = FindMyWay({ constraints: { requestedBy: customHeaderConstraint } })
-  router.on('GET', '/', { constraints: { version: '1.0.0', requestedBy: 'node' } }, () => 'asyncHandlerV1')
-  router.on('GET', '/', { constraints: { version: '2.0.0', requestedBy: 'node' } }, () => 'asyncHandlerV2')
+  const router = FindMyWay({
+    constraints: { requestedBy: customHeaderConstraint }
+  })
+  router.on(
+    'GET',
+    '/',
+    { constraints: { version: '1.0.0', requestedBy: 'node' } },
+    () => 'asyncHandlerV1'
+  )
+  router.on(
+    'GET',
+    '/',
+    { constraints: { version: '2.0.0', requestedBy: 'node' } },
+    () => 'asyncHandlerV2'
+  )
 
   router.lookup(
     {

@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('If onBadUrl is defined, then a bad url should be handled differently (find)', t => {
+test('If onBadUrl is defined, then a bad url should be handled differently (find)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -22,7 +20,7 @@ test('If onBadUrl is defined, then a bad url should be handled differently (find
   t.assert.notDeepStrictEqual(handle, null)
 })
 
-test('If onBadUrl is defined, then a bad url should be handled differently (lookup)', t => {
+test('If onBadUrl is defined, then a bad url should be handled differently (lookup)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -37,10 +35,13 @@ test('If onBadUrl is defined, then a bad url should be handled differently (look
     t.assert.fail('Should not be here')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/hello/%world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/hello/%world', headers: {} },
+    null
+  )
 })
 
-test('If onBadUrl is not defined, then we should call the defaultRoute (find)', t => {
+test('If onBadUrl is not defined, then we should call the defaultRoute (find)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -56,7 +57,7 @@ test('If onBadUrl is not defined, then we should call the defaultRoute (find)', 
   t.assert.equal(handle, null)
 })
 
-test('If onBadUrl is not defined, then we should call the defaultRoute (lookup)', t => {
+test('If onBadUrl is not defined, then we should call the defaultRoute (lookup)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -68,5 +69,8 @@ test('If onBadUrl is not defined, then we should call the defaultRoute (lookup)'
     t.assert.fail('Should not be here')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/hello/%world', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/hello/%world', headers: {} },
+    null
+  )
 })

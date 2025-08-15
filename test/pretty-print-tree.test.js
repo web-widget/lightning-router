@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('pretty print - empty tree', t => {
+test('pretty print - empty tree', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -14,7 +12,7 @@ test('pretty print - empty tree', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - static routes', t => {
+test('pretty print - static routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -33,7 +31,7 @@ test('pretty print - static routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - parametric routes', t => {
+test('pretty print - parametric routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -54,7 +52,7 @@ test('pretty print - parametric routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - parametric routes', t => {
+test('pretty print - parametric routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -82,7 +80,7 @@ test('pretty print - parametric routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - parametric routes', t => {
+test('pretty print - parametric routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -104,7 +102,7 @@ test('pretty print - parametric routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - mixed parametric routes', t => {
+test('pretty print - mixed parametric routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -125,7 +123,7 @@ test('pretty print - mixed parametric routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - wildcard routes', t => {
+test('pretty print - wildcard routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -146,7 +144,7 @@ test('pretty print - wildcard routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - parametric routes with same parent and followed by a static route which has the same prefix with the former routes', t => {
+test('pretty print - parametric routes with same parent and followed by a static route which has the same prefix with the former routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -168,15 +166,30 @@ test('pretty print - parametric routes with same parent and followed by a static
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - constrained parametric routes', t => {
+test('pretty print - constrained parametric routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
   findMyWay.on('GET', '/test', () => {})
-  findMyWay.on('GET', '/test', { constraints: { host: 'auth.fastify.io' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'auth.fastify.io' } },
+    () => {}
+  )
   findMyWay.on('GET', '/test/:hello', () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '1.1.2' } }, () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '2.0.0' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '1.1.2' } },
+    () => {}
+  )
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '2.0.0' } },
+    () => {}
+  )
 
   const tree = findMyWay.prettyPrint({ method: 'GET' })
   const expected = `\
@@ -192,7 +205,7 @@ test('pretty print - constrained parametric routes', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print - multiple parameters are drawn appropriately', t => {
+test('pretty print - multiple parameters are drawn appropriately', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -213,7 +226,7 @@ test('pretty print - multiple parameters are drawn appropriately', t => {
   t.assert.equal(tree, expected)
 })
 
-test('pretty print commonPrefix - use routes array to draw flattened routes', t => {
+test('pretty print commonPrefix - use routes array to draw flattened routes', (t) => {
   t.plan(4)
 
   const findMyWay = FindMyWay()
@@ -224,8 +237,14 @@ test('pretty print commonPrefix - use routes array to draw flattened routes', t 
   findMyWay.on('GET', '/testing/:param', () => {})
   findMyWay.on('GET', '/update', () => {})
 
-  const radixTree = findMyWay.prettyPrint({ method: 'GET', commonPrefix: true })
-  const arrayTree = findMyWay.prettyPrint({ method: 'GET', commonPrefix: false })
+  const radixTree = findMyWay.prettyPrint({
+    method: 'GET',
+    commonPrefix: true
+  })
+  const arrayTree = findMyWay.prettyPrint({
+    method: 'GET',
+    commonPrefix: false
+  })
 
   const radixExpected = `\
 └── /
@@ -252,7 +271,7 @@ test('pretty print commonPrefix - use routes array to draw flattened routes', t 
   t.assert.equal(arrayTree, arrayExpected)
 })
 
-test('pretty print commonPrefix - handle wildcard root', t => {
+test('pretty print commonPrefix - handle wildcard root', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -263,7 +282,10 @@ test('pretty print commonPrefix - handle wildcard root', t => {
   findMyWay.on('GET', '/testing/:param', () => {})
   findMyWay.on('PUT', '/update', () => {})
 
-  const arrayTree = findMyWay.prettyPrint({ method: 'GET', commonPrefix: false })
+  const arrayTree = findMyWay.prettyPrint({
+    method: 'GET',
+    commonPrefix: false
+  })
   const arrayExpected = `\
 ├── /test/hello (GET)
 ├── /testing (GET)
@@ -274,7 +296,7 @@ test('pretty print commonPrefix - handle wildcard root', t => {
   t.assert.equal(arrayTree, arrayExpected)
 })
 
-test('pretty print commonPrefix - handle wildcard root', t => {
+test('pretty print commonPrefix - handle wildcard root', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
@@ -300,19 +322,37 @@ test('pretty print commonPrefix - handle wildcard root', t => {
   t.assert.equal(radixTree, radixExpected)
 })
 
-test('pretty print commonPrefix - handle constrained routes', t => {
+test('pretty print commonPrefix - handle constrained routes', (t) => {
   t.plan(2)
 
   const findMyWay = FindMyWay()
 
   findMyWay.on('GET', '/test', () => {})
-  findMyWay.on('GET', '/test', { constraints: { host: 'auth.fastify.io' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'auth.fastify.io' } },
+    () => {}
+  )
   findMyWay.on('GET', '/test/:hello', () => {})
   findMyWay.on('PUT', '/test/:hello', () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '1.1.2' } }, () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '2.0.0' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '1.1.2' } },
+    () => {}
+  )
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '2.0.0' } },
+    () => {}
+  )
 
-  const arrayTree = findMyWay.prettyPrint({ method: 'GET', commonPrefix: false })
+  const arrayTree = findMyWay.prettyPrint({
+    method: 'GET',
+    commonPrefix: false
+  })
   const arrayExpected = `\
 └── /test (GET)
     /test (GET) {"host":"auth.fastify.io"}
@@ -324,7 +364,7 @@ test('pretty print commonPrefix - handle constrained routes', t => {
   t.assert.equal(arrayTree, arrayExpected)
 })
 
-test('pretty print includeMeta - commonPrefix: true', t => {
+test('pretty print includeMeta - commonPrefix: true', (t) => {
   t.plan(6)
 
   const findMyWay = FindMyWay()
@@ -341,11 +381,27 @@ test('pretty print includeMeta - commonPrefix: true', t => {
   store[Symbol('symbolKey')] = Symbol('symbolValue')
 
   findMyWay.on('GET', '/test', () => {}, store)
-  findMyWay.on('GET', '/test', { constraints: { host: 'auth.fastify.io' } }, () => {}, store)
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'auth.fastify.io' } },
+    () => {},
+    store
+  )
   findMyWay.on('GET', '/testing/:hello', () => {}, store)
   findMyWay.on('PUT', '/tested/:hello', () => {}, store)
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '1.1.2' } }, () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '2.0.0' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '1.1.2' } },
+    () => {}
+  )
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '2.0.0' } },
+    () => {}
+  )
 
   const radixTree = findMyWay.prettyPrint({
     method: 'GET',
@@ -429,7 +485,7 @@ test('pretty print includeMeta - commonPrefix: true', t => {
   t.assert.equal(radixTreeNoMeta, radixTreeNoMetaExpected)
 })
 
-test('pretty print includeMeta - commonPrefix: false', t => {
+test('pretty print includeMeta - commonPrefix: false', (t) => {
   t.plan(6)
 
   const findMyWay = FindMyWay()
@@ -446,11 +502,27 @@ test('pretty print includeMeta - commonPrefix: false', t => {
   store[Symbol('symbolKey')] = Symbol('symbolValue')
 
   findMyWay.on('GET', '/test', () => {}, store)
-  findMyWay.on('GET', '/test', { constraints: { host: 'auth.fastify.io' } }, () => {}, store)
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'auth.fastify.io' } },
+    () => {},
+    store
+  )
   findMyWay.on('GET', '/testing/:hello', () => {}, store)
   findMyWay.on('PUT', '/tested/:hello', () => {}, store)
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '1.1.2' } }, () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '2.0.0' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '1.1.2' } },
+    () => {}
+  )
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '2.0.0' } },
+    () => {}
+  )
 
   const arrayTree = findMyWay.prettyPrint({
     method: 'GET',
@@ -526,12 +598,15 @@ test('pretty print includeMeta - commonPrefix: false', t => {
   t.assert.equal(arrayNoMeta, arrayNoMetaExpected)
 })
 
-test('pretty print includeMeta - buildPrettyMeta function', t => {
+test('pretty print includeMeta - buildPrettyMeta function', (t) => {
   t.plan(4)
 
   const findMyWay = FindMyWay({
-    buildPrettyMeta: route => {
-      return { metaKey: route.method === 'GET' ? route.path : 'not a GET route' }
+    buildPrettyMeta: (route) => {
+      return {
+        metaKey:
+                    route.method === 'GET' ? route.path : 'not a GET route'
+      }
     }
   })
   const namedFunction = () => {}
@@ -547,11 +622,27 @@ test('pretty print includeMeta - buildPrettyMeta function', t => {
   store[Symbol('symbolKey')] = Symbol('symbolValue')
 
   findMyWay.on('GET', '/test', () => {}, store)
-  findMyWay.on('GET', '/test', { constraints: { host: 'auth.fastify.io' } }, () => {}, store)
+  findMyWay.on(
+    'GET',
+    '/test',
+    { constraints: { host: 'auth.fastify.io' } },
+    () => {},
+    store
+  )
   findMyWay.on('GET', '/test/:hello', () => {}, store)
   findMyWay.on('PUT', '/test/:hello', () => {}, store)
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '1.1.2' } }, () => {})
-  findMyWay.on('GET', '/test/:hello', { constraints: { version: '2.0.0' } }, () => {})
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '1.1.2' } },
+    () => {}
+  )
+  findMyWay.on(
+    'GET',
+    '/test/:hello',
+    { constraints: { version: '2.0.0' } },
+    () => {}
+  )
 
   const arrayTree = findMyWay.prettyPrint({
     method: 'GET',

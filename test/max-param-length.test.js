@@ -1,16 +1,14 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('maxParamLength default value is 500', t => {
+test('maxParamLength default value is 500', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay()
   t.assert.equal(findMyWay.maxParamLength, 100)
 })
 
-test('maxParamLength should set the maximum length for a parametric route', t => {
+test('maxParamLength should set the maximum length for a parametric route', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay({ maxParamLength: 10 })
@@ -18,7 +16,7 @@ test('maxParamLength should set the maximum length for a parametric route', t =>
   t.assert.deepEqual(findMyWay.find('GET', '/test/123456789abcd'), null)
 })
 
-test('maxParamLength should set the maximum length for a parametric (regex) route', t => {
+test('maxParamLength should set the maximum length for a parametric (regex) route', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay({ maxParamLength: 10 })
@@ -27,7 +25,7 @@ test('maxParamLength should set the maximum length for a parametric (regex) rout
   t.assert.deepEqual(findMyWay.find('GET', '/test/123456789abcd'), null)
 })
 
-test('maxParamLength should set the maximum length for a parametric (multi) route', t => {
+test('maxParamLength should set the maximum length for a parametric (multi) route', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay({ maxParamLength: 10 })
@@ -35,7 +33,7 @@ test('maxParamLength should set the maximum length for a parametric (multi) rout
   t.assert.deepEqual(findMyWay.find('GET', '/test/123456789abcd'), null)
 })
 
-test('maxParamLength should set the maximum length for a parametric (regex with suffix) route', t => {
+test('maxParamLength should set the maximum length for a parametric (regex with suffix) route', (t) => {
   t.plan(1)
 
   const findMyWay = FindMyWay({ maxParamLength: 10 })

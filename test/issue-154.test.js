@@ -1,10 +1,8 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('..')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 const noop = () => {}
 
-test('Should throw when not sending a string', t => {
+test('Should throw when not sending a string', (t) => {
   t.plan(3)
 
   const findMyWay = FindMyWay()

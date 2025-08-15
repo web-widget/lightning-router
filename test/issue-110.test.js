@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('Nested static parametric route, url with parameter common prefix > 1', t => {
+test('Nested static parametric route, url with parameter common prefix > 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -27,5 +25,7 @@ test('Nested static parametric route, url with parameter common prefix > 1', t =
     res.end('{"message":"hello world"}')
   })
 
-  t.assert.deepEqual(findMyWay.find('GET', '/api/foo/b-123/bar').params, { id: 'b-123' })
+  t.assert.deepEqual(findMyWay.find('GET', '/api/foo/b-123/bar').params, {
+    id: 'b-123'
+  })
 })

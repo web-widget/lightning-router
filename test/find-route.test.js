@@ -1,15 +1,21 @@
-'use strict'
+import { test } from 'node:test'
+import _rfdc from 'rfdc'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const rfdc = require('rfdc')({ proto: true })
-const FindMyWay = require('..')
+const rfdc = _rfdc({ proto: true })
 
 function equalRouters (t, router1, router2) {
   t.assert.deepStrictEqual(router1._opts, router2._opts)
   t.assert.deepEqual(router1.routes, router2.routes)
-  t.assert.deepEqual(JSON.stringify(router1.trees), JSON.stringify(router2.trees))
+  t.assert.deepEqual(
+    JSON.stringify(router1.trees),
+    JSON.stringify(router2.trees)
+  )
 
-  t.assert.deepStrictEqual(router1.constrainer.strategies, router2.constrainer.strategies)
+  t.assert.deepStrictEqual(
+    router1.constrainer.strategies,
+    router2.constrainer.strategies
+  )
   t.assert.deepStrictEqual(
     router1.constrainer.strategiesInUse,
     router2.constrainer.strategiesInUse
@@ -262,12 +268,16 @@ test('findRoute returns handler for a constrained route', (t) => {
   }
 
   {
-    const route = findMyWay.findRoute('GET', '/example', { version: '1.0.0' })
+    const route = findMyWay.findRoute('GET', '/example', {
+      version: '1.0.0'
+    })
     t.assert.equal(route.handler, handler)
   }
 
   {
-    const route = findMyWay.findRoute('GET', '/example', { version: '2.0.0' })
+    const route = findMyWay.findRoute('GET', '/example', {
+      version: '2.0.0'
+    })
     t.assert.equal(route, null)
   }
 

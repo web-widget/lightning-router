@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('..')
-
-test('Constraints should not be overrided when multiple router is created', t => {
+test('Constraints should not be overrided when multiple router is created', (t) => {
   t.plan(1)
 
   const constraint = {
@@ -11,14 +9,20 @@ test('Constraints should not be overrided when multiple router is created', t =>
     storage: function () {
       const secrets = {}
       return {
-        get: (secret) => { return secrets[secret] || null },
-        set: (secret, store) => { secrets[secret] = store }
+        get: (secret) => {
+          return secrets[secret] || null
+        },
+        set: (secret, store) => {
+          secrets[secret] = store
+        }
       }
     },
     deriveConstraint: (req, ctx) => {
       return req.headers['x-secret']
     },
-    validate () { return true }
+    validate () {
+      return true
+    }
   }
 
   const router1 = FindMyWay({ constraints: { secret: constraint } })

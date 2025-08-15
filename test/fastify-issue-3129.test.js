@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('contain param and wildcard together', t => {
+test('contain param and wildcard together', (t) => {
   t.plan(4)
 
   const findMyWay = FindMyWay({

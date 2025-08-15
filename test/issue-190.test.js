@@ -1,7 +1,5 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
 test('issue-190', (t) => {
   t.plan(6)
@@ -10,33 +8,51 @@ test('issue-190', (t) => {
 
   let staticCounter = 0
   let paramCounter = 0
-  const staticPath = function staticPath () { staticCounter++ }
-  const paramPath = function paramPath () { paramCounter++ }
-  const extraPath = function extraPath () { }
+  const staticPath = function staticPath () {
+    staticCounter++
+  }
+  const paramPath = function paramPath () {
+    paramCounter++
+  }
+  const extraPath = function extraPath () {}
   findMyWay.on('GET', '/api/users/award_winners', staticPath)
   findMyWay.on('GET', '/api/users/admins', staticPath)
   findMyWay.on('GET', '/api/users/:id', paramPath)
   findMyWay.on('GET', '/api/:resourceType/foo', extraPath)
 
-  t.assert.equal(findMyWay.find('GET', '/api/users/admins').handler, staticPath)
-  t.assert.equal(findMyWay.find('GET', '/api/users/award_winners').handler, staticPath)
-  t.assert.equal(findMyWay.find('GET', '/api/users/a766c023-34ec-40d2-923c-e8259a28d2c5').handler, paramPath)
-  t.assert.equal(findMyWay.find('GET', '/api/users/b766c023-34ec-40d2-923c-e8259a28d2c5').handler, paramPath)
+  t.assert.equal(
+    findMyWay.find('GET', '/api/users/admins').handler,
+    staticPath
+  )
+  t.assert.equal(
+    findMyWay.find('GET', '/api/users/award_winners').handler,
+    staticPath
+  )
+  t.assert.equal(
+    findMyWay.find('GET', '/api/users/a766c023-34ec-40d2-923c-e8259a28d2c5')
+      .handler,
+    paramPath
+  )
+  t.assert.equal(
+    findMyWay.find('GET', '/api/users/b766c023-34ec-40d2-923c-e8259a28d2c5')
+      .handler,
+    paramPath
+  )
 
   findMyWay.lookup({
     method: 'GET',
     url: '/api/users/admins',
-    headers: { }
+    headers: {}
   })
   findMyWay.lookup({
     method: 'GET',
     url: '/api/users/award_winners',
-    headers: { }
+    headers: {}
   })
   findMyWay.lookup({
     method: 'GET',
     url: '/api/users/a766c023-34ec-40d2-923c-e8259a28d2c5',
-    headers: { }
+    headers: {}
   })
 
   t.assert.equal(staticCounter, 2)

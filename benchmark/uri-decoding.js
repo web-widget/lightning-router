@@ -1,11 +1,10 @@
-'use strict'
+import fastDecode from 'fast-decode-uri-component'
 
-const fastDecode = require('fast-decode-uri-component')
+import pkg from 'benchmark'
+const { options, Suite } = pkg
+options.minSamples = 500
 
-const Benchmark = require('benchmark')
-Benchmark.options.minSamples = 500
-
-const suite = Benchmark.Suite()
+const suite = Suite()
 
 const uri = [
   encodeURIComponent(' /?!#@=[](),\'"'),
@@ -50,6 +49,5 @@ suite
   .on('cycle', function (event) {
     console.log(String(event.target))
   })
-  .on('complete', function () {
-  })
+  .on('complete', function () { })
   .run()

@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('Parametric and static with shared prefix / 1', t => {
+test('Parametric and static with shared prefix / 1', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -22,7 +20,7 @@ test('Parametric and static with shared prefix / 1', t => {
   findMyWay.lookup({ method: 'GET', url: '/winter', headers: {} }, null)
 })
 
-test('Parametric and static with shared prefix / 2', t => {
+test('Parametric and static with shared prefix / 2', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -41,7 +39,7 @@ test('Parametric and static with shared prefix / 2', t => {
   findMyWay.lookup({ method: 'GET', url: '/woo', headers: {} }, null)
 })
 
-test('Parametric and static with shared prefix (nested)', t => {
+test('Parametric and static with shared prefix (nested)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -57,10 +55,13 @@ test('Parametric and static with shared prefix (nested)', t => {
     t.assert.fail('we should not be here')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/winter/coming', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/winter/coming', headers: {} },
+    null
+  )
 })
 
-test('Parametric and static with shared prefix and different suffix', t => {
+test('Parametric and static with shared prefix and different suffix', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -76,10 +77,13 @@ test('Parametric and static with shared prefix and different suffix', t => {
     t.assert.ok('We should be here')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/example/shared/nested/other', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/example/shared/nested/other', headers: {} },
+    null
+  )
 })
 
-test('Parametric and static with shared prefix (with wildcard)', t => {
+test('Parametric and static with shared prefix (with wildcard)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -102,7 +106,7 @@ test('Parametric and static with shared prefix (with wildcard)', t => {
   findMyWay.lookup({ method: 'GET', url: '/winter', headers: {} }, null)
 })
 
-test('Parametric and static with shared prefix (nested with wildcard)', t => {
+test('Parametric and static with shared prefix (nested with wildcard)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -122,10 +126,13 @@ test('Parametric and static with shared prefix (nested with wildcard)', t => {
     t.assert.equal(params['*'], 'winter/coming')
   })
 
-  findMyWay.lookup({ method: 'GET', url: '/winter/coming', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/winter/coming', headers: {} },
+    null
+  )
 })
 
-test('Parametric and static with shared prefix (nested with split)', t => {
+test('Parametric and static with shared prefix (nested with split)', (t) => {
   t.plan(1)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {

@@ -1,7 +1,5 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
 function initializeRoutes (router, handler, quantity) {
   for (const x of Array(quantity).keys()) {
@@ -10,14 +8,15 @@ function initializeRoutes (router, handler, quantity) {
   return router
 }
 
-test('verify routes registered', t => {
+test('verify routes registered', (t) => {
   const assertPerTest = 5
   const quantity = 5
   // 1 (check length) + quantity of routes * quantity of tests per route
-  t.plan(1 + (quantity * assertPerTest))
+  t.plan(1 + quantity * assertPerTest)
 
   let findMyWay = FindMyWay()
-  const defaultHandler = (req, res, params) => res.end(JSON.stringify({ hello: 'world' }))
+  const defaultHandler = (req, res, params) =>
+    res.end(JSON.stringify({ hello: 'world' }))
 
   findMyWay = initializeRoutes(findMyWay, defaultHandler, quantity)
   t.assert.equal(findMyWay.routes.length, quantity)
@@ -30,13 +29,14 @@ test('verify routes registered', t => {
   })
 })
 
-test('verify routes registered and deregister', t => {
+test('verify routes registered and deregister', (t) => {
   // 1 (check length) + quantity of routes * quantity of tests per route
   t.plan(2)
 
   let findMyWay = FindMyWay()
   const quantity = 2
-  const defaultHandler = (req, res, params) => res.end(JSON.stringify({ hello: 'world' }))
+  const defaultHandler = (req, res, params) =>
+    res.end(JSON.stringify({ hello: 'world' }))
 
   findMyWay = initializeRoutes(findMyWay, defaultHandler, quantity)
   t.assert.equal(findMyWay.routes.length, quantity)

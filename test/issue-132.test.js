@@ -1,9 +1,7 @@
-'use strict'
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const { test } = require('node:test')
-const FindMyWay = require('../')
-
-test('Wildcard mixed with dynamic and common prefix / 1', t => {
+test('Wildcard mixed with dynamic and common prefix / 1', (t) => {
   t.plan(5)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -27,18 +25,33 @@ test('Wildcard mixed with dynamic and common prefix / 1', t => {
     t.assert.equal(req.method, 'GET')
   })
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj/params', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj/params', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj/params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj/params/12', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/obj/params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/obj/params/12', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj_params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj_params/12', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/obj_params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/obj_params/12', headers: {} },
+    null
+  )
 })
 
-test('Wildcard mixed with dynamic and common prefix / 2', t => {
+test('Wildcard mixed with dynamic and common prefix / 2', (t) => {
   t.plan(6)
   const findMyWay = FindMyWay({
     defaultRoute: (req, res) => {
@@ -66,15 +79,33 @@ test('Wildcard mixed with dynamic and common prefix / 2', t => {
     t.assert.equal(req.method, 'GET')
   })
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj_params/params', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj_params/params', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj/params', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj/params', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj/params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj/params/12', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/obj/params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/obj/params/12', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'OPTIONS', url: '/obj_params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'OPTIONS', url: '/obj_params/12', headers: {} },
+    null
+  )
 
-  findMyWay.lookup({ method: 'GET', url: '/obj_params/12', headers: {} }, null)
+  findMyWay.lookup(
+    { method: 'GET', url: '/obj_params/12', headers: {} },
+    null
+  )
 })

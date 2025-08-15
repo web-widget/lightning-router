@@ -1,15 +1,13 @@
-'use strict'
+import httpMethods from '../lib/http-methods.js'
+import { describe, test } from 'node:test'
+import FindMyWay from '../index.js'
 
-const httpMethods = require('../lib/http-methods')
-const { describe, test } = require('node:test')
-const FindMyWay = require('../')
-
-describe('should support shorthand', t => {
+describe('should support shorthand', (t) => {
   for (const i in httpMethods) {
     const m = httpMethods[i]
     const methodName = m.toLowerCase()
 
-    test('`.' + methodName + '`', t => {
+    test('`.' + methodName + '`', (t) => {
       t.plan(1)
       const findMyWay = FindMyWay()
 
@@ -22,7 +20,7 @@ describe('should support shorthand', t => {
   }
 })
 
-test('should support `.all` shorthand', t => {
+test('should support `.all` shorthand', (t) => {
   t.plan(11)
   const findMyWay = FindMyWay()
 

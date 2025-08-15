@@ -1,10 +1,8 @@
-'use strict'
-
-const { test } = require('node:test')
-const FindMyWay = require('../')
+import { test } from 'node:test'
+import FindMyWay from '../index.js'
 const noop = () => {}
 
-test('Should keep semver store when split node', t => {
+test('Should keep semver store when split node', (t) => {
   t.plan(4)
 
   const findMyWay = FindMyWay()
