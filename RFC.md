@@ -10,460 +10,358 @@
 
 ## 🎯 项目动机与愿景
 
-### 基于 find-my-way 的改进空间
+find-my-way 是当前世界上最快的 JavaScript 路由库，但其严重依赖 Node.js 特定 API，无法在 Web 标准环境中运行。本项目旨在将其重新定位为**元路由器**，通过分层架构既保持原有的性能优势，又支持多平台运行。
 
-1. **平台限制**: find-my-way 严重依赖 Node.js 特定 API，无法在 Web 标准环境中运行
-2. **模块系统**: 使用 CommonJS，与现代 Web 开发标准不符
-3. **类型安全**: 缺乏 TypeScript 支持，开发体验和代码质量有待提升
-4. **性能优化**: 存在进一步性能优化的空间，特别是在路由类型区分方面
+**主要改进方向**：平台依赖解耦、模块系统现代化（ESM）、类型安全（TypeScript）、跨平台兼容性。
 
-### 目标收益
-
-1. **⚡ 性能突破**: Lightning Router 在世界上最快的路由库基础上再提升 30%，创造新的性能标杆
-2. **跨平台兼容**: 支持 Cloudflare Workers、Service Workers、Node.js 等多种环境
-3. **现代开发体验**: 使用 ESM + TypeScript + 严格模式
-4. **更好的维护性**: 类型安全、更清晰的代码结构
-5. **战略价值**: 为 Web Widget 元框架提供世界级性能的底层路由支持
-
-### 战略意义
-
-Lightning Router 将作为 [Web Widget](https://github.com/web-widget/web-widget) 元框架的底层路由组件，推动多框架架构的发展。通过类型感知优化、内存布局优化等创新技术，我们将创造新的性能标杆，为整个 JavaScript 生态系统树立新的性能标准。
+**核心目标**：为 [Web Widget](https://github.com/web-widget/web-widget) 元框架提供世界级性能的底层路由支持，同时保持对现有 Node.js 生态的完全兼容。
 
 ## 🏗️ 技术方案与架构设计
 
-### 架构设计原则
+### 元路由器核心理念：分层架构
 
-1. **Web 标准优先**: 所有 API 设计基于 Web 标准（Request/Response）
-2. **平台无关**: 核心逻辑不依赖特定平台 API
-3. **类型安全**: 全面使用 TypeScript 严格模式
-4. **性能导向**: 在世界上最快的路由库基础上进一步突破性能极限
+基于深入的架构分析，我们决定将 find-my-way 重新定位为**元路由器**，作为底层核心，然后基于它扩展出不同的上层适配器。这样既保持了核心算法的优势，又实现了跨平台的灵活性。
 
-### 核心变更
+```
+┌─────────────────────────────────────────────────────────┐
+│                   应用层适配器                            │
+├─────────────────────┬───────────────────────────────────┤
+│   Node.js 适配器     │     Web 标准适配器                 │
+│   (现有兼容)        │     (新增功能)                      │
+├─────────────────────┴───────────────────────────────────┤
+│                 Find-My-Way 元路由核心                   │
+│              (平台无关的路由匹配算法)                      │
+└─────────────────────────────────────────────────────────┘
+```
 
-#### 1. 模块系统迁移
+### 设计原则
 
--   **从**: CommonJS (`require`/`module.exports`)
--   **到**: ESM (`import`/`export`)
--   **影响**: 所有源代码文件、测试文件、配置文件
+**分离关注点**：核心层专注于高性能路由匹配算法（平台无关），适配层处理平台特定的 API 差异。
 
-#### 2. 平台 API 抽象
+**最小化核心改动**：保持 Radix 树、约束系统等核心算法不变，只抽象出平台特定的部分。
 
--   **移除**: `node:assert`, `node:querystring` 等 Node.js 特定依赖
--   **实现**: 最小化的平台无关工具函数
--   **保持**: 核心路由算法逻辑不变
+**渐进式升级**：现有 Node.js 代码零改动，新项目可选择 Web 标准模式。
 
-#### 3. HTTP 对象标准化
+### 技术栈现代化
 
--   **从**: Node.js Request/Response 对象
--   **到**: Web 标准 Request/Response 对象
--   **适配**: 提供 Node.js 兼容层（可选）
-
-#### 4. TypeScript 集成
-
--   **配置**: 严格模式 TypeScript 配置
--   **类型**: 完整的类型定义和接口
--   **工具链**: Vitest 测试框架
+将项目从 CommonJS + JavaScript 迁移到 ESM + TypeScript，要求 Node.js >= 18 以获得原生 Web API 支持。核心改动包括模块系统迁移、HTTP 对象标准化、TypeScript 严格模式集成。
 
 ## 📋 实施计划与执行策略
 
 ### 当前实施状态
 
-**✅ 阶段一.3 依赖清理已完成**
-- 已完成 Node.js 特定依赖的清理
-- 已实现平台无关的断言和查询字符串解析工具
-- 已完成 CJS 到 ESM 的完整迁移
-- 所有测试用例通过（484/484）
+**已完成**：Node.js 依赖清理、ESM 迁移，所有测试用例通过（484/484）。
 
-**🔄 后续阶段规划**
-- **阶段一.1-1.2**: 基础配置更新和模块系统迁移（已完成）
-- **阶段二**: Web 标准 API 重构
-- **阶段三**: TypeScript 严格模式（包含 Vitest 迁移）
-- **阶段四**: Lightning Router 性能优化
+**进行中**：TypeScript 严格模式迁移。
+
+**待开始**：Web 标准 API 重构、元路由器架构重构。
 
 ### 实施原则
 
-每个阶段都遵循以下原则：
+小步快跑（每个变更 200-300 行以内）、测试驱动、可回滚。前三阶段保持功能兼容，第四阶段进行架构重构。
 
-1. **小步快跑**: 每个变更控制在适合 code review 的范围（通常不超过 200-300 行）
-2. **测试驱动**: 每个变更都必须通过单元测试验证
-3. **可回滚**: 每个步骤都可以独立回滚，不影响其他部分
-
-#### 兼容性策略（分阶段区分）
-
-**阶段一、二、三：保持内部功能兼容**
-
--   **CJS 到 ESM**: 保持核心算法完全兼容，只改变模块系统
--   **JS 到 TypeScript**: 保持运行时行为完全一致，只添加类型安全
--   **Node.js 到 Web 标准**: 只改变平台适配层，核心路由算法保持不变
-
-**阶段四：全新 API 设计**
-
--   **性能优化阶段**: 完全重新设计 API，优先考虑性能提升
--   **接口重塑**: 基于 Web 标准和性能需求重新设计 API
--   **激进优化**: 采用性能第一的设计原则，不保持与 find-my-way 的兼容性
-
-### 阶段一：ESM 迁移
-
-#### 1.1 基础配置更新
-
-**目标**: 建立 ESM 基础环境，确保测试框架正常工作
-
--   [ ] 更新 `package.json` 为 ESM 格式 (`"type": "module"`)
--   [ ] 验证测试环境正常工作
--   [ ] **Code Review 检查点**: 确认配置变更正确，测试框架正常运行
-
-**注意**: TypeScript 和 Vitest 配置将在后续阶段处理，当前阶段专注于 ESM 迁移
-
-#### 1.2 模块系统迁移
-
-**目标**: 逐步将核心文件从 CommonJS 迁移到 ESM
-
-**步骤 1**: 迁移工具函数
-
--   [ ] 迁移 `lib/url-sanitizer.js` 到 ESM
--   [ ] 迁移 `lib/http-methods.js` 到 ESM
--   [ ] 运行相关单元测试
--   [ ] **Code Review 检查点**: 确认工具函数功能正常
-
-**步骤 2**: 迁移核心逻辑
-
--   [ ] 迁移 `lib/node.js` 到 ESM
--   [ ] 迁移 `lib/handler-storage.js` 到 ESM
--   [ ] 运行相关单元测试
--   [ ] **Code Review 检查点**: 确认核心逻辑功能正常
-
-**步骤 3**: 迁移约束系统
-
--   [ ] 迁移 `lib/constrainer.js` 到 ESM
--   [ ] 迁移 `lib/strategies/` 目录到 ESM
--   [ ] 运行相关单元测试
--   [ ] **Code Review 检查点**: 确认约束系统功能正常
-
-**步骤 4**: 迁移主入口
-
--   [ ] 迁移 `index.js` 到 ESM
--   [ ] 运行完整测试套件
--   [ ] **Code Review 检查点**: 确认所有功能正常工作
-
-#### 1.3 依赖清理
-
-**目标**: 移除 Node.js 特定依赖，实现平台无关的工具函数
-
-**步骤 1**: 实现断言工具
-
--   [ ] 创建 `lib/assertions.js` (使用 JavaScript，TypeScript 将在后续阶段处理)
--   [ ] 实现平台无关的断言函数
--   [ ] 更新所有使用 `node:assert` 的地方
--   [ ] 运行单元测试验证功能
--   [ ] **Code Review 检查点**: 确认断言功能正常
-
-**步骤 2**: 实现查询字符串解析
-
--   [ ] 创建 `lib/querystring.js` (使用 JavaScript，TypeScript 将在后续阶段处理)
--   [ ] 实现平台无关的查询字符串解析
--   [ ] 更新所有使用 `node:querystring` 的地方
--   [ ] 运行单元测试验证功能
--   [ ] **Code Review 检查点**: 确认查询字符串解析功能正常
-
-### 阶段二：Web 标准 API 重构
-
-#### 2.1 接口定义和适配器
-
-**目标**: 定义 Web 标准接口，实现平台适配器
-
-**步骤 1**: 定义核心接口
-
--   [ ] 创建 `src/types/web.ts` 定义 Web 标准接口
--   [ ] 创建 `src/adapters/` 目录结构
--   [ ] 实现基础适配器接口
--   [ ] 运行类型检查
--   [ ] **Code Review 检查点**: 确认接口定义正确
-
-**步骤 2**: 实现平台适配器
-
--   [ ] 实现 `src/adapters/node.ts` (Node.js 兼容层)
--   [ ] 实现 `src/adapters/web.ts` (Web 标准适配器)
--   [ ] 实现 `src/adapters/worker.ts` (Worker 环境适配器)
--   [ ] 运行单元测试验证适配器功能
--   [ ] **Code Review 检查点**: 确认适配器功能正常
-
-#### 2.2 核心逻辑重构
-
-**目标**: 逐步重构核心逻辑以支持 Web 标准
-
-**步骤 1**: 重构路由查找逻辑
-
--   [ ] 更新 `find` 方法使用 Web 标准对象
--   [ ] 更新 `lookup` 方法使用 Web 标准对象
--   [ ] 运行相关单元测试
--   [ ] **Code Review 检查点**: 确认路由查找功能正常
-
-**步骤 2**: 重构约束系统
-
--   [ ] 更新约束策略使用 Web 标准对象
--   [ ] 更新约束推导逻辑
--   [ ] 运行相关单元测试
--   [ ] **Code Review 检查点**: 确认约束系统功能正常
-
-**步骤 3**: 重构处理器调用
-
--   [ ] 更新 `callHandler` 方法使用 Web 标准对象
--   [ ] 更新处理器接口定义
--   [ ] 运行相关单元测试
--   [ ] **Code Review 检查点**: 确认处理器调用功能正常
-
-#### 2.3 测试环境适配
-
-**目标**: 配置多环境测试，确保跨平台兼容性
-
-**步骤 1**: 配置多环境测试
-
--   [ ] 更新现有测试用例使用 Web 标准对象
--   [ ] 添加平台兼容性测试
--   [ ] 运行完整测试套件
--   [ ] **Code Review 检查点**: 确认所有测试通过
-
-**注意**: Vitest 和 Worker 环境测试将在后续阶段处理，当前阶段专注于 Web 标准 API 重构
-
-### 阶段三：TypeScript 严格模式
+### 阶段三：TypeScript 严格模式（进行中）
 
 #### 3.1 TypeScript 工具链部署
-
-**目标**: 建立 TypeScript 开发环境
-
--   [ ] 配置 `tsconfig.json` 严格模式
--   [ ] 配置 ESLint 和 Prettier
--   [ ] 配置类型检查脚本
--   [ ] 验证工具链正常工作
--   [ ] **Code Review 检查点**: 确认 TypeScript 工具链配置正确
-
-**注意**: 此阶段将处理所有 TypeScript 相关配置和迁移工作
+- [ ] 配置 `tsconfig.json` 严格模式
+- [ ] 配置 ESLint 和 Prettier  
+- [ ] 配置类型检查脚本
+- [ ] 验证工具链正常工作
 
 #### 3.2 文件重命名和基础类型
-
-**目标**: 将文件重命名为 .ts，添加基础类型定义
-
--   [ ] 使用 `git mv` 重命名所有 .js 文件为 .ts
--   [ ] 创建 `src/types/index.ts` 定义基础类型
--   [ ] 添加基础的 JSDoc 注释
--   [ ] 运行类型检查，修复基础错误
--   [ ] **Code Review 检查点**: 确认文件重命名正确，基础类型定义完整
-
-**注意**: 此阶段将处理从 JavaScript 到 TypeScript 的完整迁移
+- [ ] 使用 `git mv` 重命名所有 .js 文件为 .ts
+- [ ] 创建 `src/types/index.ts` 定义基础类型
+- [ ] 添加基础的 JSDoc 注释
+- [ ] 运行类型检查，修复基础错误
 
 #### 3.3 核心类型系统
-
-**目标**: 为核心模块添加完整的类型定义
-
-**步骤 1**: 路由树类型
-
--   [ ] 为 `src/core/node.ts` 添加完整类型
--   [ ] 为 `src/core/handler-storage.ts` 添加完整类型
--   [ ] 运行相关单元测试和类型检查
--   [ ] **Code Review 检查点**: 确认路由树类型定义正确
-
-**步骤 2**: 约束系统类型
-
--   [ ] 为 `src/core/constrainer.ts` 添加完整类型
--   [ ] 为 `src/strategies/` 目录添加类型定义
--   [ ] 运行相关单元测试和类型检查
--   [ ] **Code Review 检查点**: 确认约束系统类型定义正确
+- [ ] 为 `src/core/node.ts` 添加完整类型
+- [ ] 为 `src/core/handler-storage.ts` 添加完整类型
+- [ ] 为 `src/core/constrainer.ts` 添加完整类型
+- [ ] 为 `src/strategies/` 目录添加类型定义
 
 #### 3.4 主路由类型
+- [ ] 为 `src/core/router.ts` 添加完整类型
+- [ ] 为路由注册方法添加类型
+- [ ] 为路由查找方法添加类型
+- [ ] 为测试用例添加类型定义
 
-**目标**: 为主路由类添加完整的类型定义
+### 阶段四：Web 标准 API 重构（待开始）
 
-**步骤 1**: 路由方法类型
+#### 4.1 原生 Web API 支持
+- [ ] 创建 `web.js` 作为 Web API 版本的入口
+- [ ] 重构签名，以符合 Web 的使用方式
+- [ ] 支持原生 Request/Response 对象
+- [ ] 更新接口定义支持原生 Web API
 
--   [ ] 为 `src/core/router.ts` 添加完整类型
--   [ ] 为路由注册方法添加类型
--   [ ] 为路由查找方法添加类型
--   [ ] 运行相关单元测试和类型检查
--   [ ] **Code Review 检查点**: 确认路由方法类型定义正确
+#### 4.2 核心逻辑重构
+- [ ] 更新 `lookup` 方法签名，传入原生 Request 对象
+- [ ] 更新 `Handler` 接口签名，返回原生 Response 对象
+- [ ] 更新约束策略使用原生 Request 对象
+- [ ] 更新约束推导逻辑
 
-**步骤 2**: 测试用例类型
+#### 4.3 测试环境适配
+- [ ] 更新现有测试用例使用原生 Web API
+- [ ] 添加原生 Web API 兼容性测试
+- [ ] 配置多环境测试
+- [ ] 运行完整测试套件
 
--   [ ] 为测试用例添加类型定义
--   [ ] 更新测试工具函数类型
--   [ ] 运行完整测试套件和类型检查
--   [ ] **Code Review 检查点**: 确认测试用例类型定义正确
+### 阶段五：元路由器架构重构（待开始）
 
-### 阶段四：Lightning Router 性能优化
+#### 5.1 性能基准建立
+- [ ] 运行现有性能基准测试
+- [ ] 记录关键性能指标
+- [ ] 分析性能瓶颈
+- [ ] 分析中间件 vs 处理器路由的使用模式
 
-**⚡ 性能突破阶段 - 挑战世界上最快的路由库**
+#### 5.2 元路由器核心重构
+- [ ] 识别并抽象 Node.js 特定的部分（req/res 对象）
+- [ ] 设计平台无关的 `RouteContext` 接口
+- [ ] 创建 `UniversalHandler` 类型定义
+- [ ] 将现有路由匹配逻辑改为使用平台无关接口
+- [ ] 实现 `MetaRouter` 核心类
+- [ ] 保持所有现有算法优化（Radix树、约束系统等）
 
-#### 4.1 性能基准建立
+#### 5.3 适配器实现
+**Node.js 适配器**：
+- [ ] 实现 `NodeRouterAdapter` 类
+- [ ] 保持现有 API 完全兼容
+- [ ] 包装 Node.js handler 为 UniversalHandler
+- [ ] 运行所有现有测试，确保零破坏性变更
 
-**目标**: 建立性能基准，分析优化机会
+**Web 标准适配器**：
+- [ ] 实现 `WebRouterAdapter` 类
+- [ ] 支持中间件链执行模式
+- [ ] 实现智能路径选择优化
+- [ ] 添加 Web 标准适配器的专门测试
 
-**步骤 1**: 记录当前性能
+#### 5.4 性能验证和优化
+- [ ] 对比重构前后的性能数据
+- [ ] 验证 Node.js 适配器性能无退化
+- [ ] 测试 Web 适配器的中间件链性能
+- [ ] 分析中间件链执行开销
+- [ ] 探索上下文对象复用策略
+- [ ] 研究编译时优化可能性
 
--   [ ] 运行现有性能基准测试
--   [ ] 记录关键性能指标
--   [ ] 分析性能瓶颈
--   [ ] **Code Review 检查点**: 确认性能基准数据准确
+### 检查点说明
 
-**步骤 2**: 分析优化机会
-
--   [ ] 分析中间件 vs 处理器路由的使用模式
--   [ ] 识别内存使用优化机会
--   [ ] 识别算法优化机会
--   [ ] **Code Review 检查点**: 确认优化机会分析合理
-
-**注意**: 此阶段将处理所有性能优化和最终验证工作
-
-#### 4.2 Lightning Router 路由类型优化
-
-**目标**: 实现类型感知的路由优化，挑战性能极限
-
-**步骤 1**: 设计类型化接口
-
--   [ ] 设计 `RouteType` 枚举和接口
--   [ ] 更新路由注册接口支持类型
--   [ ] 添加类型验证逻辑
--   [ ] 运行单元测试验证接口设计
--   [ ] **Code Review 检查点**: 确认类型化接口设计合理
-
-**步骤 2**: 实现类型感知优化
-
--   [ ] 为中间件路由实现优化策略
--   [ ] 为处理器路由实现优化策略
--   [ ] 更新路由树结构支持类型优化
--   [ ] 运行单元测试验证优化逻辑
--   [ ] **Code Review 检查点**: 确认类型感知优化实现正确
-
-**步骤 3**: 更新测试用例
-
--   [ ] 更新现有测试用例支持类型化路由
--   [ ] 添加类型化路由的专门测试
--   [ ] 运行完整测试套件
--   [ ] **Code Review 检查点**: 确认测试用例更新正确
--   [ ] **注意**: 此阶段允许破坏性变更，不强制要求向后兼容
-
-#### 4.3 Lightning Router 性能验证和优化
-
-**目标**: 验证性能提升，挑战 30% 性能突破目标
-
-**步骤 1**: 性能测试
-
--   [ ] 运行性能基准测试
--   [ ] 对比优化前后的性能数据
--   [ ] 分析性能提升效果
--   [ ] **Code Review 检查点**: 确认性能测试结果准确
-
-**步骤 2**: 最终优化
-
--   [ ] 基于测试结果进行最终优化
--   [ ] 优化内存使用
--   [ ] 优化算法效率
--   [ ] 运行完整测试套件
--   [ ] **Code Review 检查点**: 确认最终优化效果显著
--   [ ] **目标**: Lightning Router 在世界上最快的路由库基础上提升 30% 性能
+每个主要步骤完成后都有 **Code Review 检查点**，确保：
+- 代码质量符合标准
+- 所有相关测试通过
+- 性能无明显退化
+- 功能完整性得到验证
 
 ## 🔧 技术细节与实现方案
 
 ### 文件结构规划
 
+基于元路由器架构的新文件结构：
+
 ```
-src/
-├── core/
-│   ├── router.ts          # 核心路由逻辑
-│   ├── node.ts            # 路由树节点
+find-my-way/
+├── core/                  # 元路由核心（平台无关）
+│   ├── meta-router.ts     # 元路由器主类
+│   ├── radix-tree.ts      # Radix 树实现
+│   ├── constrainer.ts     # 约束系统
+│   ├── handler-storage.ts # 处理器存储
 │   └── types.ts           # 核心类型定义
-├── strategies/
+├── adapters/              # 平台适配器
+│   ├── node.ts           # Node.js 适配器
+│   ├── web.ts            # Web 标准适配器
+│   ├── deno.ts           # Deno 适配器（未来）
+│   └── cloudflare.ts     # Cloudflare Workers 适配器（未来）
+├── strategies/            # 约束策略
 │   ├── http-method.ts     # HTTP 方法策略
 │   ├── host.ts           # 主机策略
 │   └── version.ts        # 版本策略
-├── utils/
+├── utils/                 # 工具函数
 │   ├── url-sanitizer.ts   # URL 处理工具
 │   ├── querystring.ts     # 查询字符串处理
 │   └── assertions.ts      # 断言工具
-├── adapters/              # 平台适配器
-│   ├── node.ts           # Node.js 兼容层
-│   ├── worker.ts         # Worker 环境适配
-│   └── web.ts            # Web 标准适配
-└── index.ts              # 主入口文件
+├── index.ts              # 默认导出（Node.js 适配器）
+└── web.ts                # Web 标准导出
 ```
 
-### 平台适配策略
+### 迁移策略
 
-为了确保跨平台兼容性，我们将采用适配器模式：
+采用渐进式迁移：基础设施建设（ESM、Web API、TypeScript）→ 元路由器架构重构（内部重构、适配器实现、性能验证）→ 生态扩展。
 
-1. **核心逻辑**: 完全平台无关，只依赖 Web 标准
-2. **适配器层**: 为不同平台提供兼容层
-3. **自动检测**: 根据运行环境自动选择合适的适配器
+要求 Node.js >= 18 以获得原生 Web API 支持，确保跨平台兼容性。
 
 ### 核心接口设计
 
+#### 元路由器核心接口 - 平台无关
+
 ```typescript
-// Web 标准兼容的请求/响应接口
-interface WebRequest {
-    method: string;
-    url: string;
-    headers?: Headers;
+/**
+ * 元路由器核心接口 - 完全平台无关
+ */
+interface MetaRouter {
+  /**
+   * 注册路由处理器
+   * @param method HTTP 方法
+   * @param path 路径模式  
+   * @param handler 平台无关的处理器
+   * @param options 路由选项
+   */
+  register(
+    method: string | string[],
+    path: string, 
+    handler: UniversalHandler,
+    options?: RouteOptions
+  ): void;
+
+  /**
+   * 查找匹配的路由
+   * @param method HTTP 方法
+   * @param path 请求路径
+   * @param context 查找上下文
+   * @returns 匹配结果或 null
+   */
+  lookup(
+    method: string,
+    path: string,
+    context?: LookupContext
+  ): RouteMatch | null;
+
+  /**
+   * 执行路由处理器
+   * @param match 路由匹配结果
+   * @param executor 平台特定的执行器
+   * @returns 执行结果
+   */
+  execute<T>(
+    match: RouteMatch,
+    executor: RouteExecutor<T>
+  ): T;
 }
 
-interface WebResponse {
-    status?: number;
-    headers?: Headers;
-    body?: any;
+/**
+ * 平台无关的处理器接口
+ */
+type UniversalHandler = (context: RouteContext) => any;
+
+/**
+ * 路由上下文 - 包含所有路由信息，但不包含平台特定对象
+ */
+interface RouteContext {
+  method: string;
+  path: string;
+  params: Record<string, string>;
+  searchParams: Record<string, string>;
+  store?: any;
+  constraints?: Record<string, any>;
+  // 平台特定数据通过泛型扩展
+  platform?: any;
 }
 
-// 路由处理器接口
-type RouteHandler = (
-    request: WebRequest,
-    response: WebResponse,
-    params: Record<string, string>,
-    store?: any
-) => WebResponse | Promise<WebResponse>;
-
-// 路由配置接口
-interface RouteOptions {
-    constraints?: Record<string, any>;
-    store?: any;
-}
-
-// 约束策略接口 (基于现有 constrainer.js)
-interface ConstraintStrategy {
-    name: string;
-    storage: () => any;
-    deriveConstraint: (req: WebRequest, ctx?: any) => any;
-    mustMatchWhenDerived?: boolean;
-    isCustom?: boolean;
-    isAsync?: boolean;
-}
-
-// 路由类型枚举
-enum RouteType {
-    MIDDLEWARE = 'middleware',
-    HANDLER = 'handler',
-}
-
-// 类型化路由配置
-interface TypedRouteOptions extends RouteOptions {
-    type?: RouteType;
+/**
+ * 路由执行器 - 平台适配器实现
+ */
+interface RouteExecutor<T> {
+  (handler: UniversalHandler, context: RouteContext): T;
 }
 ```
 
-### 性能优化策略
+#### 关键改动点
 
-#### 路由类型区分
+**当前签名的问题：**
+```typescript
+// 当前：强依赖 Node.js 类型
+handler(req: IncomingMessage, res: ServerResponse, params, store, searchParams)
+lookup(req: IncomingMessage, res: ServerResponse, ctx?, done?)
+```
 
--   **中间件路由**: 通常数量少，但匹配多个 URL
--   **处理器路由**: 通常数量多，但每个只处理特定 URL
--   **优化策略**: 根据路由类型使用不同的匹配算法
+**元路由签名：**
+```typescript
+// 改为：平台无关
+handler(context: RouteContext)
+lookup(method: string, path: string, context?: LookupContext)
+```
 
-#### 内存优化
+#### 适配器架构
 
--   减少对象创建
--   优化字符串处理
--   使用更高效的数据结构
+**1. Node.js 适配器（保持现有兼容性）**
 
-#### 路由注册优化
+```typescript
+class NodeRouterAdapter {
+  constructor(private metaRouter: MetaRouter) {}
 
--   **类型化注册**: 允许开发者明确指定路由类型（中间件 vs 处理器）
--   **预编译优化**: 根据路由类型进行不同的编译策略
--   **缓存策略**: 针对不同类型路由使用不同的缓存机制
+  // 保持现有签名不变
+  on(method: string, path: string, handler: NodeHandler, store?: any) {
+    // 将 Node.js handler 包装为 UniversalHandler
+    const universalHandler = (context: RouteContext) => {
+      const { req, res } = context.platform;
+      return handler(req, res, context.params, context.store, context.searchParams);
+    };
+    
+    this.metaRouter.register(method, path, universalHandler, { store });
+  }
+
+  lookup(req: IncomingMessage, res: ServerResponse, ctx?: any, done?: Function) {
+    // 使用元路由器查找并执行
+    // ...实现细节
+  }
+}
+```
+
+**2. Web 标准适配器（支持中间件）**
+
+```typescript
+class WebRouterAdapter {
+  constructor(private metaRouter: MetaRouter) {}
+
+  // 新的中间件 API
+  use(path: string, middleware: MiddlewareHandler) {
+    // 中间件注册逻辑
+  }
+
+  on(method: string, path: string, handler: MiddlewareHandler, options?: RouteOptions) {
+    // 将中间件风格 handler 包装为 UniversalHandler
+    const universalHandler = (context: RouteContext) => {
+      return handler(context, () => Promise.resolve(new Response('', { status: 404 })));
+    };
+    
+    this.metaRouter.register(method, path, universalHandler, options);
+  }
+
+  async lookup(request: Request, initialContext?: any): Promise<Response> {
+    // 使用元路由器查找，构建中间件链并执行
+    // ...实现细节
+  }
+}
+```
+
+#### 包结构设计
+
+```
+find-my-way/
+├── core/                 # 元路由核心
+│   ├── meta-router.js
+│   ├── radix-tree.js
+│   └── constrainer.js
+├── adapters/
+│   ├── node.js          # Node.js 适配器
+│   ├── web.js           # Web 标准适配器
+│   ├── deno.js          # Deno 适配器
+│   └── cloudflare.js    # Cloudflare Workers 适配器
+├── index.js             # 默认导出 Node.js 适配器（兼容性）
+└── web.js               # 导出 Web 适配器
+```
+
+**使用方式：**
+```typescript
+// 现有项目（无变化）
+import FindMyWay from 'find-my-way';
+
+// Web 标准项目
+import { WebRouter } from 'find-my-way/web';
+
+// 自定义适配器
+import { MetaRouter } from 'find-my-way/core';
+```
+
+
 
 #### 约束系统优化
 
@@ -473,154 +371,24 @@ interface TypedRouteOptions extends RouteOptions {
 -   **编译时优化**: 利用 TypeScript 编译时信息优化约束匹配
 -   **策略缓存**: 为常用约束策略提供缓存机制
 
-## ⚠️ 风险评估与应对策略
+## 🎯 成功标准
 
-### 高风险项
+**功能完整性**：所有现有功能正常工作，通过所有单元测试，支持目标平台。
 
-1. **API 兼容性**: 新项目将采用全新的 API 设计，与 find-my-way 不兼容
-2. **性能回归**: 重构过程中可能引入性能问题
-3. **平台兼容性**: 不同平台的实现差异
-4. **性能目标风险**: 30% 性能提升是一个极具挑战性的目标，存在失败风险
-5. **项目命名**: 需要选择合适的新项目名称和包名
+**代码质量**：TypeScript 严格模式无错误，完整的 API 文档，代码质量检查通过。
 
-### 缓解措施
+**性能基准**：Node.js 适配器保持原有性能，Web 适配器性能影响可控。
 
-1. **渐进式开发**: 基于 find-my-way 的优秀算法，逐步构建新项目
-2. **持续测试**: 每个阶段都进行完整测试
-3. **平台验证**: 在多个目标平台进行验证
-4. **风险控制**: 即使性能目标未完全达成，我们仍将获得一个符合 Web 标准的现代化路由库
-5. **项目定位**: 明确这是一个全新的项目，不是 find-my-way 的升级版本
+## 质量保证
 
-### 风险收益分析
+每个提交运行类型检查、单元测试和代码质量检查。每个阶段进行 Code Review 和功能验证。
 
-**高收益高风险策略**:
+## 关键技术决策
 
--   **收益**: 创造新的性能标杆，为 Web Widget 元框架提供世界级路由基础
--   **风险**: 30% 性能提升目标极具挑战性，存在失败可能性
--   **底线保障**: 即使性能目标未完全达成，仍将获得符合 Web 标准的现代化路由库
+**分阶段策略**：前三阶段保持算法兼容，第四阶段重新设计 API 以优化性能和 Web 标准兼容。
 
-## 🎯 成功标准与质量保证
+**核心优势保留**：Radix 树路径匹配算法、灵活的约束策略机制、高效的位图匹配算法。
 
-### 功能完整性
+**重构重点**：Node.js 依赖替换、测试框架迁移到 Vitest、模块系统 ESM 化、TypeScript 严格模式。
 
--   [ ] 所有现有功能正常工作
--   [ ] 通过所有单元测试
--   [ ] 支持所有目标平台
-
-### 性能目标
-
--   [ ] 路由查找性能提升 30%+（在世界上最快的路由库基础上）
--   [ ] 内存使用优化
--   [ ] 启动时间优化
--   [ ] 创造新的性能标杆
-
-### 代码质量
-
--   [ ] TypeScript 严格模式无错误
--   [ ] 100% 类型覆盖率
--   [ ] 完整的 API 文档
-
-### 开发流程质量
-
--   [ ] 每个步骤都有明确的 Code Review 检查点
--   [ ] 每个变更都通过单元测试验证
--   [ ] 每个阶段都可以独立回滚
--   [ ] 变更控制在适合 Code Review 的范围（200-300 行以内）
--   [ ] 阶段一、二、三保持功能兼容性
--   [ ] 阶段四允许性能优先的破坏性变更
-
-## 质量保证机制
-
-### 自动化检查
-
--   **类型检查**: 每个提交都运行 TypeScript 类型检查
--   **单元测试**: 每个提交都运行完整测试套件
--   **性能回归**: 每个阶段都运行性能基准测试
--   **代码质量**: 使用 ESLint 和 Prettier 确保代码质量
-
-### 手动检查
-
--   **Code Review**: 每个步骤完成后进行 Code Review
--   **功能验证**: 每个阶段完成后验证核心功能
--   **性能验证**: 每个优化阶段完成后验证性能提升
-
-## 实施顺序
-
-1. **阶段一**: ESM 迁移和基础重构
-2. **阶段二**: Web 标准 API 重构
-3. **阶段三**: TypeScript 严格模式
-4. **阶段四**: 性能优化和最终验证
-
-## 后续计划
-
-1. **文档更新**: 编写迁移指南和 API 文档
-2. **示例项目**: 提供各平台的示例代码
-3. **社区反馈**: 收集用户反馈并持续改进
-
-## 💡 重要建议与战略思考
-
-### 1. 分阶段 API 设计策略
-
-**阶段一、二、三：保持内部算法兼容**
-
--   保持核心算法兼容，只改变模块系统和平台适配层
-
-**阶段四：全新 API 设计**
-
--   完全重新设计 API，优先考虑性能提升和 Web 标准兼容
-
-### 2. 测试策略优化
-
--   **多环境测试**: 使用 Vitest 的 Worker 环境支持，在多个平台进行测试（阶段三）
--   **性能回归测试**: 每个阶段都进行性能基准测试
--   **类型测试**: 使用 TypeScript 的类型检查作为测试的一部分（阶段三）
-
-### 3. 性能优化重点
-
-基于代码分析，建议重点关注：
-
--   **路由类型区分**: 中间件和处理器使用不同的优化策略
--   **内存布局**: 优化数据结构的内存布局
--   **编译时优化**: 利用 TypeScript 的编译时信息进行优化
--   **约束系统**: 当前位图匹配算法有进一步优化空间
-
-### 4. 平台兼容性策略
-
--   **核心逻辑**: 完全平台无关
--   **适配器模式**: 为不同平台提供轻量级适配器
--   **自动检测**: 运行时自动选择合适的实现
-
-### 5. 基于代码分析的关键发现
-
-#### 5.1 现有架构优势
-
--   **Radix 树**: 高效的路径匹配算法
--   **约束系统**: 灵活的约束策略机制
--   **位图优化**: 高效的约束匹配算法
-
-#### 5.2 重构重点
-
--   **Node.js 依赖**: 替换为平台无关的工具函数
--   **测试框架**: 迁移到 Vitest（阶段三）
--   **模块系统**: 从 CommonJS 到 ESM（阶段一）
--   **类型系统**: 添加完整的 TypeScript 支持（阶段三）
-
-#### 5.3 性能优化机会
-
--   **路由类型感知**: 区分中间件和处理器路由
--   **编译时优化**: 利用 TypeScript 编译时信息
--   **内存优化**: 减少对象创建和字符串处理
-
-### 6. 技术实现细节
-
-#### 6.1 平台无关工具函数
-
-需要实现断言、查询字符串解析、URL 处理等平台无关的工具函数来替换 Node.js 依赖。
-
-#### 6.2 约束系统重构
-
-基于现有的约束系统，定义标准的约束策略接口，支持自定义策略和异步推导。
-
-#### 6.3 路由树优化
-
-基于现有的 Radix 树实现，根据路由类型优化树结构和内存布局。
+**性能研究**：评估中间件链对路由性能的影响、分析适配器模式的性能成本、验证现有优化算法的兼容性。
