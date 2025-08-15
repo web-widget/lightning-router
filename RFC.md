@@ -52,39 +52,52 @@ find-my-way 是当前世界上最快的 JavaScript 路由库，但其严重依�
 
 **已完成**：Node.js 依赖清理、ESM 迁移，所有测试用例通过（484/484）。
 
-**进行中**：TypeScript 严格模式迁移。
+**重新设计**：TypeScript 迁移策略调整为渐进式迁移。
 
-**待开始**：Web 标准 API 重构、元路由器架构重构。
+**待开始**：lib 目录 TypeScript 化、Web 标准 API 重构、元路由器架构重构。
 
 ### 实施原则
 
 小步快跑（每个变更 200-300 行以内）、测试驱动、可回滚。前三阶段保持功能兼容，第四阶段进行架构重构。
 
-### 阶段三：TypeScript 严格模式（进行中）
+### 阶段三：TypeScript 渐进式迁移（重新设计）
 
-#### 3.1 TypeScript 工具链部署
-- [ ] 配置 `tsconfig.json` 严格模式
-- [ ] 配置 ESLint 和 Prettier  
-- [ ] 配置类型检查脚本
-- [ ] 验证工具链正常工作
+#### 3.1 渐进式迁移策略
+- [ ] 采用渐进式迁移：`lib/*.js` → `lib/*.ts`（非严格模式）
+- [ ] 保持现有测试和构建流程的连续性
+- [ ] 逐步提升 TypeScript 严格程度
+- [ ] 避免一次性大规模重构的风险
 
-#### 3.2 文件重命名和基础类型
-- [ ] 使用 `git mv` 重命名所有 .js 文件为 .ts
-- [ ] 创建 `src/types/index.ts` 定义基础类型
-- [ ] 添加基础的 JSDoc 注释
-- [ ] 运行类型检查，修复基础错误
+#### 3.2 第一阶段：lib 目录 TypeScript 化
+- [ ] 使用 `git mv *.js *.ts` 重命名 lib 目录下的所有文件
+- [ ] 配置 `tsconfig.json` 为非严格模式（`"strict": false`）
+- [ ] 添加基础的 JSDoc 注释和类型注解
+- [ ] 确保所有现有测试继续通过
+- [ ] 运行类型检查，记录和修复基础错误
 
-#### 3.3 核心类型系统
-- [ ] 为 `src/core/node.ts` 添加完整类型
-- [ ] 为 `src/core/handler-storage.ts` 添加完整类型
-- [ ] 为 `src/core/constrainer.ts` 添加完整类型
-- [ ] 为 `src/strategies/` 目录添加类型定义
+#### 3.3 第二阶段：类型系统逐步完善
+- [ ] 逐步启用 TypeScript 严格模式选项
+- [ ] 为核心模块添加完整的类型定义
+- [ ] 创建 `lib/types/index.ts` 定义基础类型
+- [ ] 保持向后兼容性，确保零破坏性变更
 
-#### 3.4 主路由类型
-- [ ] 为 `src/core/router.ts` 添加完整类型
+#### 3.4 核心类型系统
+- [ ] 为 `lib/node.ts` 添加完整类型
+- [ ] 为 `lib/handler-storage.ts` 添加完整类型
+- [ ] 为 `lib/constrainer.ts` 添加完整类型
+- [ ] 为 `lib/strategies/` 目录添加类型定义
+
+#### 3.5 主路由类型
+- [ ] 为 `lib/index.js` 对应的 TypeScript 版本添加完整类型
 - [ ] 为路由注册方法添加类型
 - [ ] 为路由查找方法添加类型
 - [ ] 为测试用例添加类型定义
+
+#### 3.6 第三阶段：目录结构重构
+- [ ] 在类型系统稳定后，重构到 `src/` 目录结构
+- [ ] 保持所有类型定义和功能完整性
+- [ ] 更新构建配置和导入路径
+- [ ] 验证重构后的功能正确性
 
 ### 阶段四：Web 标准 API 重构（待开始）
 
@@ -392,3 +405,174 @@ import { MetaRouter } from 'find-my-way/core';
 **重构重点**：Node.js 依赖替换、测试框架迁移到 Vitest、模块系统 ESM 化、TypeScript 严格模式。
 
 **性能研究**：评估中间件链对路由性能的影响、分析适配器模式的性能成本、验证现有优化算法的兼容性。
+
+## 🔄 渐进式 TypeScript 迁移实施计划
+
+### 迁移策略概述
+
+基于对当前实施挑战的深入分析，我们决定采用**渐进式迁移策略**，避免一次性大规模重构的风险。这个策略的核心是：**先让代码跑起来，再逐步提升质量**。
+
+### 第一阶段：lib 目录 TypeScript 化
+
+#### 1.1 准备工作
+```bash
+# 备份当前状态
+git stash
+
+# 创建迁移分支
+git checkout -b feature/progressive-typescript-migration
+```
+
+#### 1.2 配置非严格模式 TypeScript
+```json
+// tsconfig.json 临时配置
+{
+  "compilerOptions": {
+    "strict": false,                    // 关键：非严格模式
+    "noImplicitAny": false,            // 允许隐式 any
+    "noImplicitReturns": false,        // 允许隐式返回
+    "noUnusedLocals": false,           // 允许未使用的局部变量
+    "noUnusedParameters": false,       // 允许未使用的参数
+    "exactOptionalPropertyTypes": false, // 放宽可选属性类型
+    "noUncheckedIndexedAccess": false,  // 放宽索引访问检查
+    "include": ["lib/**/*", "index.js"], // 包含 lib 目录和主入口
+    "outDir": "./dist",
+    "rootDir": "."
+  }
+}
+```
+
+#### 1.3 渐进式文件重命名
+```bash
+# 按模块重要性顺序重命名
+cd lib
+
+# 1. 工具函数（风险最低）
+git mv assertions.js assertions.ts
+git mv null-object.js null-object.ts
+git mv http-methods.js http-methods.ts
+
+# 2. 策略模块
+cd strategies
+git mv http-method.js http-method.ts
+git mv accept-host.js accept-host.ts
+git mv accept-version.js accept-version.ts
+cd ..
+
+# 3. 核心模块（风险较高）
+git mv url-sanitizer.js url-sanitizer.ts
+git mv querystring.js querystring.ts
+git mv pretty-print.js pretty-print.ts
+git mv constrainer.js constrainer.ts
+git mv handler-storage.js handler-storage.ts
+git mv node.js node.ts
+
+cd ..
+git mv index.js index.ts
+```
+
+#### 1.4 基础类型注解添加
+```typescript
+// lib/types/index.ts
+export interface RouteOptions {
+  version?: string;
+  host?: string;
+  store?: any;
+  constraints?: Record<string, any>;
+}
+
+export interface RouteMatch {
+  handler: Function;
+  params: Record<string, string>;
+  store?: any;
+  searchParams?: Record<string, string>;
+}
+
+// 逐步添加更多类型定义...
+```
+
+### 第二阶段：类型系统逐步完善
+
+#### 2.1 启用基础类型检查
+```json
+// 逐步启用 TypeScript 选项
+{
+  "compilerOptions": {
+    "strict": false,
+    "noImplicitAny": true,           // 启用：禁止隐式 any
+    "strictNullChecks": true,        // 启用：严格的 null 检查
+    "strictFunctionTypes": true,     // 启用：严格的函数类型
+    // 其他选项保持关闭状态
+  }
+}
+```
+
+#### 2.2 核心模块类型完善
+```typescript
+// lib/node.ts
+export interface NodeHandler {
+  (req: IncomingMessage, res: ServerResponse, params: Record<string, string>, store?: any, searchParams?: Record<string, string>): void;
+}
+
+export interface NodeRouter {
+  on(method: string | string[], path: string, handler: NodeHandler, store?: any): void;
+  lookup(req: IncomingMessage, res: ServerResponse, ctx?: any, done?: Function): void;
+  // ... 其他方法
+}
+```
+
+### 第三阶段：目录结构重构
+
+#### 3.1 重构时机
+- 所有 lib 模块类型稳定
+- 测试覆盖率保持 100%
+- 性能基准无退化
+- 类型错误数量可控（< 50 个）
+
+#### 3.2 重构步骤
+```bash
+# 1. 创建新的 src 目录结构
+mkdir -p src/{core,strategies,utils,types,adapters}
+
+# 2. 移动文件到新结构
+git mv lib/core/* src/core/
+git mv lib/strategies/* src/strategies/
+git mv lib/utils/* src/utils/
+git mv lib/types/* src/types/
+
+# 3. 更新导入路径
+# 使用 sed 或 IDE 批量替换
+```
+
+### 质量保证措施
+
+#### 4.1 每个阶段的检查点
+- **功能完整性**：所有测试通过
+- **类型安全**：TypeScript 编译成功
+- **性能基准**：无性能退化
+- **向后兼容**：现有 API 完全兼容
+
+#### 4.2 回滚策略
+```bash
+# 如果某个阶段出现问题，快速回滚
+git reset --hard HEAD~1
+git checkout main
+git branch -D feature/progressive-typescript-migration
+```
+
+### 预期收益
+
+1. **降低风险**：避免一次性大规模重构
+2. **保持连续性**：测试和构建流程不中断
+3. **渐进式改进**：类型安全逐步提升
+4. **快速反馈**：每个小步骤都能验证
+5. **团队学习**：逐步熟悉 TypeScript 最佳实践
+
+### 时间估算
+
+- **第一阶段**：1-2 周（lib 目录 TypeScript 化）
+- **第二阶段**：2-3 周（类型系统完善）
+- **第三阶段**：1-2 周（目录重构）
+- **总计**：4-7 周（相比原方案的 8-12 周，节省 30-40% 时间）
+
+这个渐进式迁移策略完全符合 RFC 中"小步快跑"的原则，将大大降低项目风险，提高成功率。
